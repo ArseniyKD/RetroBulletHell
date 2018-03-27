@@ -24,6 +24,7 @@ class Player(pygame.sprite.Sprite):
             for j in range(3):
                 img = pygame.image.load(os.path.join('images','player' + str(i) + str(j) + '.png')).convert()
                 img.convert_alpha()     # optimise alpha
+                img.set_alpha(255)
                 self.images[i].append(img)
         self.image = self.images[0][1]
         self.rect  = self.image.get_rect()
