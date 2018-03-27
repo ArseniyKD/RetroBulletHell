@@ -41,7 +41,7 @@ while not exit:
     screen.fill(BLACK) # draw background
     player_list.draw(screen) # draw player
     pygame.display.flip()  # required to show changes to screen
-    shared.clock.tick(shared.fps) # advance internal clock
+    shared.clock.tick(shared.fps) # limit fps of game to shared.fps
 
 pygame.quit()
 sys.exit()

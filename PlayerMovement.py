@@ -53,53 +53,38 @@ class Player(pygame.sprite.Sprite):
         '''
         Update sprite position
         '''
+        # record movex and movey before constraining so the correct images can
+        # be used
+        Movex = self.movex
+        Movey = self.movey
+
+        # update the position of the images and constrain them to the screen
         self.rect.x = self.rect.x + self.movex
         self.rect.y = self.rect.y + self.movey
+        self.constrain()
 
-        # moving left only
-        if self.movex < 0 and self.movey == 0:
-            self.constrain()
-            self.image = self.images[1][0]
+        #change player image to match movement input
 
-        # moving right only
-        if self.movex > 0 and self.movey == 0:
-            self.constrain()
-            self.image = self.images[1][2]
+        # default positions
+        i = 1
+        j = 1
 
-        # moving up only
-        if self.movex == 0 and self.movey < 0:
-            self.constrain()
-            self.image = self.images[2][1]
+        # if moving down
+        if Movey > 0:
+            i = 0
+        # if moving up
+        elif Movey < 0:
+            i = 2
 
-        # moving down only
-        if self.movex == 0 and self.movey > 0:
-            self.constrain()
-            self.image = self.images[0][1]
+        # if moving left
+        if Movex < 0:
+            j = 0
+        # if moving right
+        elif Movex > 0:
+            j = 2
 
-        # moving left and up
-        if self.movex < 0 and self.movey < 0:
-            self.constrain()
-            self.image = self.images[2][0]
-
-        # moving left and down
-        if self.movex < 0 and self.movey > 0:
-            self.constrain()
-            self.image = self.images[0][0]
-
-        # moving right and up
-        if self.movex > 0 and self.movey < 0:
-            self.constrain()
-            self.image = self.images[2][2]
-
-        # moving right and down
-        if self.movex > 0 and self.movey > 0:
-            self.constrain()
-            self.image = self.images[0][2]
-
-        # returning to center
-        if self.movex == 0 and self.movey == 0:
-            self.constrain()
-            self.image = self.images[1][1]
+        self.constrain()
+        self.image = self.images[i][j]
 
 
 
