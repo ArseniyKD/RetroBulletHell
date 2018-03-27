@@ -1,0 +1,37 @@
+CMPUT 275 Project Proposal: Retro Arcade Bullet Hell by Arseniy Kouzmenkov and
+Patrisha de Boon
+
+Description:
+The project is planned to be a typical arcade style retro bullet hell game built
+completely in Python3 using pygame. There will be multiple different enemies
+that will be generated in random waves. The enemies will be shooting different
+projectiles at the player. The game will get more and more difficult as the game
+progresses. The player will be awarded points for destroying enemies and a
+highest score will be displayed at the end of each game. Before the game starts,
+the player will be able to change difficulty which will change the amount of
+hitpoints that the enemies have. This project will have to use data structures
+discussed in class for efficient lookup time, and the code will implement typical
+object oriented programming paradigms. In addition to that, we will write the
+random generation algorithm for the enemies. As a result, this project will
+demonstrate all the relevant knowledge from the CMPUT 275 material.
+
+Milestones:
+
+1) March 22:
+Get the basic gameplay mechanics: one type of enemies is generated and comes
+down the screen in waves, the player moves on the screen. The enemies are stored
+in correct data structures.
+
+2) March 27:
+Create multiple types of enemies, make the enemies fire different projectiles,
+make the player shoot different projectiles, randomise the enemy generation.
+
+3) April 3:
+Create collision detection, create the game over state, create the menu, create
+a "nuke" that will clear the screen. Create a speed increment of the game as the
+game progresses.
+
+4) April 8:
+Create alterable difficulty settings in the menu, do graphical touch ups,
+implement the score tracking and high score mechanics. Final touch ups before
+presentation.
