@@ -10,15 +10,18 @@ yMax = shared.height  # allows us to place further restrictions later
 # https://opensource.com/article/17/12/game-python-add-a-player
 # And the sprites we used came from here:
 # https://arboris.deviantart.com/art/Spaceship-sprites-43030167
+
+
 class Player(pygame.sprite.Sprite):
     '''
     Spawn a player
     '''
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
+        self.health = 3
         self.movex = 0 # move along X
         self.movey = 0 # move along Y
-        self.images = []
+        self.images = []  # note: all images are 39 by 43
         for i in range(3):
             self.images.append([])
             for j in range(3):
@@ -28,6 +31,9 @@ class Player(pygame.sprite.Sprite):
                 self.images[i].append(img)
         self.image = self.images[0][1]
         self.rect  = self.image.get_rect()
+
+    def changeHealth(self, change):
+        self.health += change
 
     def move(self,x,y):
         '''

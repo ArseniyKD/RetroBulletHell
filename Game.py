@@ -4,12 +4,16 @@ import os      # help python identify the OS
 import Bullets
 import PlayerMovement
 import shared
+import EnemyCreation
 
 # consider using BLACK = (23, 23, 23)
 BLACK = (0,0,0)
 WHITE = (254,254,254)
 
 playerFireDelay = 250  # number of milliseconds between firing
+enemyWaveDelay = 1000 # number of milliseconds between enemyWave generation
+enemyMoveDelay = 700  # number of milliseconds between enemy waves moving down
+enemyStep = 1
 
 pygame.init()  # initialize module
 screen = pygame.display.set_mode((shared.width, shared.height)) # create screen surface on
@@ -28,8 +32,11 @@ player_list.add(player)
 bullets = []
 bullet_list = pygame.sprite.Group()
 
+enemies = []
+
 exit = False
-prevTime = pygame.time.get_ticks()
+prevEnemyTime = prevFireTime = pygame.time.get_ticks()
+
 while not exit:
     flag = False
     for event in pygame.event.get():
@@ -45,11 +52,19 @@ while not exit:
     if not flag:
         player.update()
 
-    if pygame.time.get_ticks() - prevTime >= playerFireDelay:
-        prevTime = pygame.time.get_ticks()
+    if pygame.time.get_ticks() - prevEnemyTime >= enemyWaveDelay:
+        # spawn an enemy wave
+        enemies.append(EnemyCreation.EnemyWave(shared.waveSize))   # spawn an enemy wave
+        enemies[-1].CreateEnemyWave()
+
+    if pygame.time.get_ticks() - prevFireTime >= playerFireDelay:
+        prevFireTime = pygame.time.get_ticks()
         bullets.append(Bullets.Bullet("p1", player))
         bullet_list.add(bullets[-1])
 
+    #update all enemy waves
+    for i in range(len(enemies)):
+        enemies[i].update(enemyStep)
 
     toRemove = []
     for b in bullets:
@@ -62,6 +77,7 @@ while not exit:
         bullets.remove(b)
 
     screen.fill(BLACK) # draw background
+    shared.enemy_list.draw(screen) # draw enemies
     player_list.draw(screen) # draw player
     bullet_list.draw(screen) # draw bullets
     pygame.display.flip()  # required to show changes to screen

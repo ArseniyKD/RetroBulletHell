@@ -1,21 +1,32 @@
+import pygame
+import sys     # let python use the file system
+import os      # help python identify the OS
 from avl_dict import AVLDict as aDict
 from random import *
+import shared
 
-class Enemy:
+class Enemy(pygame.sprite.Sprite):
     def __init__(self, Etype):
+        pygame.sprite.Sprite.__init__(self)
+        # self.image = pygame.image.load(os.path.join('images','enemy' + str(Etype) + '.png')).convert()
+        self.image = pygame.image.load(os.path.join('images','player' + '11' + '.png')).convert()
+        self.image.convert_alpha()     # optimise alpha
+        self.image.set_alpha(255)
+        self.rect  = self.image.get_rect()
+
         self.Etype = Etype
-        self.imageSize = 24
+        self.imageSize = 39
         self.healthValue = 0
         self.reDraw = True
 
     def Einfo(self):
-        if self.Etype == "Common":
+        if self.Etype == 0:  # "Common"
             return 2
-        elif self.Etype == "Rare":
+        elif self.Etype == 1:  # "Rare"
             return 3
-        elif self.Etype == "Epic":
+        elif self.Etype == 2:  # "Epic"
             return 4
-        elif self.Etype == "Legendary":
+        elif self.Etype == 3:  # "Legendary"
             return 5
 
     def setHealth(self, hp): # TODO: use this : , Etype):
@@ -50,18 +61,19 @@ class EnemyWave:
         self.Etype = None
         self.Size = Size
         self.wave = aDict()
-        self.initialX = 0
+        self.initialX = 1
+        self.currentY = -shared.width
 
     def randomEtype(self):
         randomValue = randint(0, 1000)
         if randomValue < 800:
-            self.Etype = "Common"
+            self.Etype = 0  # "Common"
         elif randomValue < 900:
-            self.Etype = "Rare"
+            self.Etype = 1  # "Rare"
         elif randomValue < 975:
-            self.Etype = "Epic"
+            self.Etype = 2  # "Epic"
         else:
-            self.Etype = "Legendary"
+            self.Etype = 3 # "Legendary"
 
     def setInitialX(self, iX: int):
         self.initialX = iX
@@ -84,8 +96,16 @@ class EnemyWave:
     def CreateEnemyWave(self):
         self.randomEtype()
         currEnemyData = Enemy(self.Etype)
+        shared.enemy_list.add(currEnemyData)
         for i in range(self.Size):
-            self.wave[self.initialX + i*currEnemyData.imageSize] = currEnemyData
+            currEnemyData.rect.x = self.initialX + i*(shared.enemyImgWidth + 10)
+            currEnemyData.rect.y = self.currentY
+            self.wave[currEnemyData.rect.x] = currEnemyData
+
+    def update(self, step):
+        self.currentY += step
+        for i in range(shared.waveSize):
+            self.wave[self.initialX + i*(shared.enemyImgWidth + 10)].rect.y = self.currentY
 
     def __str__(self):
         output = []
