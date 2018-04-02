@@ -21,11 +21,17 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y = origin.rect.y
         self.rect.x = origin.rect.x + origin.image.get_width()/2 - self.image.get_width()/2
 
+    def getActive(self):
+        return self.active
+
+    def setActive(self, value):
+        self.active = value
+
     def update(self):
         '''
         Update sprite position
         '''
-        
+
         # update the position of the images and constrain them to the screen
         self.rect.y = self.rect.y - shared.bulletStep
 

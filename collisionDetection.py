@@ -15,3 +15,12 @@ class CollisionDetection:
                 return False
         else:
             return False
+
+collisionDetect(bulletX, bulletY, YtoCheck, XtoCheck, imageSizeX, imageSizeY):
+    if bulletY <= YtoCheck + imageSizeY and YtoCheck <= .bulletY:
+        if bulletX <= YtoCheck + imageSizeY and YtoCheck <= bulletY:
+            return True
+        else:
+            return False
+    else:
+        return False
