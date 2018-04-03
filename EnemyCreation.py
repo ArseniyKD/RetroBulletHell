@@ -66,12 +66,16 @@ class EnemyWave:
         randomValue = randint(0, 1000)
         if randomValue < 800:
             self.Etype = 0  # "Common"
+            self.Size = 8
         elif randomValue < 900:
             self.Etype = 1  # "Rare"
+            self.Size = 4
         elif randomValue < 975:
             self.Etype = 2  # "Epic"
+            self.Size = 2
         else:
             self.Etype = 3 # "Legendary"
+            self.Size = 1
 
     def setInitialX(self, iX: int):
         self.initialX = iX
@@ -100,9 +104,10 @@ class EnemyWave:
 
         self.width = currEnemyData.rect.width
         self.height = currEnemyData.rect.height
-        self.Size = int(shared.width/(self.width+shared.enemyBuffer))
+        # self.Size = int(shared.width/(self.width+shared.enemyBuffer))
         self.currentY = -(self.height+shared.enemyBuffer)
-        self.initialX = int((shared.width-self.Size*(self.width+shared.enemyBuffer)+shared.enemyBuffer)/2)
+        print(self.Size)
+        self.initialX = randint(shared.enemyBuffer, abs(shared.width-self.Size*(self.width+shared.enemyBuffer)))
 
         for i in range(self.Size):
             if i > 0:
