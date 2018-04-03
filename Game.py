@@ -5,12 +5,14 @@ import Bullets
 import PlayerMovement
 import shared
 import EnemyCreation
+import random
 
 # consider using BLACK = (23, 23, 23)
 BLACK = (0,0,0)
 WHITE = (254,254,254)
 
-playerFireDelay = 250  # number of milliseconds between firing
+playerFireDelay = 250  # number of milliseconds between player firing
+enemyFireDelay = 1000 # number of milliseconds between enemy firing
 enemyWaveDelay = 3000 # number of milliseconds between enemyWave generation
 enemyMoveDelay = 40  # number of milliseconds between enemy waves moving down
 enemyStep = int((shared.enemyImgHeight+2.5*shared.enemyBuffer)*enemyMoveDelay/enemyWaveDelay)
@@ -29,13 +31,14 @@ player.rect.y = shared.height - shared.height/4 - shared.imgHeight/2
 player_list = pygame.sprite.Group()
 player_list.add(player)
 
-bullets = []
+playerBullets = []
+enemyBullets = []
 bullet_list = pygame.sprite.Group()
 
 enemyWaves = []
 
 exit = False
-prevFireTime = prevEnemyMoveTime = pygame.time.get_ticks()
+prevPlayerFireTime = prevEnemyMoveTime = prevEnemyFireTime = pygame.time.get_ticks()
 prevEnemySpawnTime = pygame.time.get_ticks() - enemyWaveDelay
 
 while not exit:
@@ -55,7 +58,6 @@ while not exit:
 
     if (pygame.time.get_ticks() - prevEnemySpawnTime) >= enemyWaveDelay and (len(enemyWaves) < 4):
         prevEnemySpawnTime = pygame.time.get_ticks()
-        print("spawn an enemy")
         # spawn an enemy wave
         enemyWaves.append(EnemyCreation.EnemyWave(shared.waveSize))
         enemyWaves[-1].CreateEnemyWave()
@@ -64,15 +66,42 @@ while not exit:
         prevEnemyMoveTime = pygame.time.get_ticks()
         #update all enemy waves
         for i in range(len(enemyWaves)):
-            enemyWaves[i].update(enemyStep)
+            enemyWaves[i].move(enemyStep)
 
-    if pygame.time.get_ticks() - prevFireTime >= playerFireDelay:
-        prevFireTime = pygame.time.get_ticks()
-        bullets.append(Bullets.Bullet("p1", player))
-        bullet_list.add(bullets[-1])
+    if pygame.time.get_ticks() - prevPlayerFireTime >= playerFireDelay:
+        prevPlayerFireTime = pygame.time.get_ticks()
+        playerBullets.append(Bullets.Bullet("p1", player))
+        bullet_list.add(playerBullets[-1])
+
+    if pygame.time.get_ticks() - prevEnemyFireTime >= enemyFireDelay:
+        prevEnemyFireTime = pygame.time.get_ticks()
+        frontIndecies = []
+        for i in enemyWaves[0].activeIndecies:
+            randomAngle = random.randint(-20, 20)
+            enemyBullets.append(Bullets.Bullet("e1", enemyWaves[0].IndexEnemyWave(i), randomAngle))
+            bullet_list.add(enemyBullets[-1])
 
     bToRemove = []
-    for b in bullets:
+    for b in enemyBullets:
+        flag = False
+        if b.rect.bottom >= player.rect.top and b.rect.top <= player.rect.bottom:
+            if b.rect.right >= player.rect.left and b.rect.left <= player.rect.right:
+                b.setActive(False)
+                flag = player.changeHealth(-1)
+                if flag:
+                    pass  # TODO: add player death
+
+        if not b.getActive():
+            bToRemove.append(b)
+        else:
+            b.update()
+
+    for b in bToRemove:
+        bullet_list.remove(b)
+        enemyBullets.remove(b)
+
+    bToRemove = []
+    for b in playerBullets:
         flag = False
         for EWave in enemyWaves:
             # if bullet is in range of wave
@@ -80,7 +109,7 @@ while not exit:
                 for i in EWave.activeIndecies:
                     currEnemy = EWave.IndexEnemyWave(i)
                     # if bullet is in range of enemy
-                    if b.rect.x <= currEnemy.rect.x + shared.enemyImgHeight and currEnemy.rect.x <= b.rect.x:
+                    if b.rect.x <= currEnemy.rect.right and currEnemy.rect.left <= b.rect.x:
                         b.setActive(False)
                         EWave.impactEnemyAtX(i, 1)
                         flag = True
@@ -90,8 +119,6 @@ while not exit:
                     enemyWaves.remove(EWave)
                     break
 
-
-
         if not b.getActive():
             bToRemove.append(b)
         else:
@@ -99,7 +126,7 @@ while not exit:
 
     for b in bToRemove:
         bullet_list.remove(b)
-        bullets.remove(b)
+        playerBullets.remove(b)
 
     screen.fill(BLACK) # draw background
     shared.enemy_list.draw(screen) # draw enemyWaves

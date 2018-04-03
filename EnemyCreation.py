@@ -9,13 +9,10 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, Etype):
         pygame.sprite.Sprite.__init__(self)
         # self.image = pygame.image.load(os.path.join('images','enemy' + str(Etype) + '.png')).convert()
-        self.image = pygame.image.load(os.path.join('images','player' + '11' + '.png')).convert()
-        self.image.convert_alpha()     # optimise alpha
-        self.image.set_alpha(255)
+        self.image = pygame.image.load(os.path.join('images','enemy' + '0' + '.png')).convert_alpha()
         self.rect  = self.image.get_rect()
 
         self.Etype = Etype
-        self.imageSize = 39
         self.healthValue = 1
         self.reDraw = True
 
@@ -43,12 +40,6 @@ class Enemy(pygame.sprite.Sprite):
     def getHealth(self):
         return self.healthValue
 
-    def setImageSize(self, newSize: int):
-        self.imageSize = newSize
-
-    def getImageSize(self):
-        return self.imageSize
-
     def setReDraw(self, flag: bool):
         self.reDraw = flag
 
@@ -64,8 +55,11 @@ class EnemyWave:
         self.Etype = None
         self.Size = Size
         self.wave = aDict()
-        self.initialX = int((shared.width-self.Size*(shared.enemyImgWidth+shared.enemyBuffer)+shared.enemyBuffer)/2)
-        self.currentY = -(shared.enemyImgHeight+shared.enemyBuffer)
+        # self.initialX = int((shared.width-self.Size*(shared.enemyImgWidth+shared.enemyBuffer)+shared.enemyBuffer)/2)
+        self.initialX = None
+        self.currentY = None
+        self.width = None
+        self.height = None
         self.activeIndecies = []
 
     def randomEtype(self):
@@ -86,7 +80,7 @@ class EnemyWave:
         return self.initialX
 
     def impactEnemyAtX(self, index, Damage):
-        impactX = self.initialX + index*(shared.enemyImgWidth + shared.enemyBuffer)
+        impactX = self.initialX + index*(self.width + shared.enemyBuffer)
 
         if not self.wave[impactX].getReDraw():
             return False
@@ -102,21 +96,31 @@ class EnemyWave:
 
     def CreateEnemyWave(self):
         self.randomEtype()
+        currEnemyData = Enemy(self.Etype)
+
+        self.width = currEnemyData.rect.width
+        self.height = currEnemyData.rect.height
+        self.Size = int(shared.width/(self.width+shared.enemyBuffer))
+        self.currentY = -(self.height+shared.enemyBuffer)
+        self.initialX = int((shared.width-self.Size*(self.width+shared.enemyBuffer)+shared.enemyBuffer)/2)
+
         for i in range(self.Size):
+            if i > 0:
+                currEnemyData = Enemy(self.Etype)
+
             self.activeIndecies.append(i)
-            currEnemyData = Enemy(self.Etype)
             shared.enemy_list.add(currEnemyData)
-            currEnemyData.rect.x = self.initialX + i*(shared.enemyImgWidth + shared.enemyBuffer)
+            currEnemyData.rect.x = self.initialX + i*(self.width + shared.enemyBuffer)
             currEnemyData.rect.y = self.currentY
             self.wave[currEnemyData.rect.x] = currEnemyData
 
     def IndexEnemyWave(self, index):
-        return self.wave[self.initialX + index*(shared.enemyImgWidth + shared.enemyBuffer)]
+        return self.wave[self.initialX + index*(self.width + shared.enemyBuffer)]
 
-    def update(self, step):
+    def move(self, step):
         self.currentY += step
         for i in self.activeIndecies:
-            self.wave[self.initialX + i*(shared.enemyImgWidth + shared.enemyBuffer)].rect.y = self.currentY
+            self.wave[self.initialX + i*(self.width + shared.enemyBuffer)].rect.y = self.currentY
 
     def getCurrentY(self):
         return self.currentY
