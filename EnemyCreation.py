@@ -107,7 +107,6 @@ class EnemyWave:
         self.height = currEnemyData.rect.height
         # self.Size = int(shared.width/(self.width+shared.enemyBuffer))
         self.currentY = -(self.height+shared.enemyBuffer)
-        print(self.Size)
         self.initialX = randint(shared.enemyBuffer, abs(shared.width-self.Size*(self.width+shared.enemyBuffer)))
 
         for i in range(self.Size):
