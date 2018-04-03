@@ -7,14 +7,15 @@ import shared
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, Etype):
-        pygame.sprite.Sprite.__init__(self)
-        # self.image = pygame.image.load(os.path.join('images','enemy' + str(Etype) + '.png')).convert()
-        self.image = pygame.image.load(os.path.join('images','enemy' + '0' + '.png')).convert_alpha()
-        self.rect  = self.image.get_rect()
-
         self.Etype = Etype
         self.healthValue = 1
         self.reDraw = True
+
+        pygame.sprite.Sprite.__init__(self)
+        # self.image = pygame.image.load(os.path.join('images','enemy' + str(Etype) + '.png')).convert()
+        self.image = pygame.image.load(os.path.join('images','enemy' + str(self.Etype) + '.png')).convert_alpha()
+        self.rect  = self.image.get_rect()
+
 
     def Einfo(self):
         if self.Etype == 0:  # "Common"

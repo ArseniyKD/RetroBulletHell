@@ -56,12 +56,14 @@ while not exit:
     if not flag:
         player.update()
 
+    # Spawn an enemy wave after an enemyWaveDelay, with a max of 4 waves on
+    # screen at once
     if (pygame.time.get_ticks() - prevEnemySpawnTime) >= enemyWaveDelay and (len(enemyWaves) < 4):
         prevEnemySpawnTime = pygame.time.get_ticks()
-        # spawn an enemy wave
         enemyWaves.append(EnemyCreation.EnemyWave(shared.waveSize))
         enemyWaves[-1].CreateEnemyWave()
 
+    
     if (pygame.time.get_ticks() - prevEnemyMoveTime >= enemyMoveDelay):
         prevEnemyMoveTime = pygame.time.get_ticks()
         #update all enemy waves
