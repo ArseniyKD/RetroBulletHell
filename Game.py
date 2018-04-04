@@ -1,4 +1,5 @@
 import pygame  # load pygame keywords
+from PyZenity import *
 import sys     # let python use the file system
 import os      # help python identify the OS
 import Bullets
@@ -46,6 +47,9 @@ while not exit:
     for event in pygame.event.get():
         # quit the game if they press the x button on the window
         if event.type == pygame.QUIT:
+            save = Question('Would you like to save your game? This will overwrite any previous saved games.')
+            if save:
+                
             exit = True
             break
 
@@ -63,7 +67,7 @@ while not exit:
         enemyWaves.append(EnemyCreation.EnemyWave(shared.waveSize))
         enemyWaves[-1].CreateEnemyWave()
 
-    
+
     if (pygame.time.get_ticks() - prevEnemyMoveTime >= enemyMoveDelay):
         prevEnemyMoveTime = pygame.time.get_ticks()
         #update all enemy waves
