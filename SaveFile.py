@@ -5,10 +5,6 @@ import EnemyCreation
 
 def saveFile(enemyWaves, enemyBullets, playerBullets, player):
     ostream = open('save.txt', 'w')
-    '''
-    for e in shared.enemy_list:
-        ostream.write('e' + str(e.Etype) + ',' + str(e.rect.x) + ',' + str(e.rect.y) + ' ')
-    '''
     for e in enemyWaves:
         ostream.write('e' + ',' + str(e.Etype) + ',' + str(e.currentY) + ',' + str(e.initialX))
         for i in e.activeIndecies:
