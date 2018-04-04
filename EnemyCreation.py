@@ -8,7 +8,13 @@ import shared
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, Etype):
         self.Etype = Etype
-        self.healthValue = 1
+        if self.Etype == 0 or 1:
+            self.healthValue = 1
+        elif self.Etype == 2:
+            self.healthValue == 4
+        elif self.Etype == 3:
+            self.healthValue == 10
+
         self.reDraw = True
 
         pygame.sprite.Sprite.__init__(self)
@@ -19,13 +25,13 @@ class Enemy(pygame.sprite.Sprite):
 
     def Einfo(self):
         if self.Etype == 0:  # "Common"
-            return 2
+            return 0
         elif self.Etype == 1:  # "Rare"
-            return 3
+            return 1
         elif self.Etype == 2:  # "Epic"
-            return 4
+            return 2
         elif self.Etype == 3:  # "Legendary"
-            return 5
+            return 3
 
     def setHealth(self, hp): # TODO: use this : , Etype):
         self.healthValue = hp
@@ -65,13 +71,13 @@ class EnemyWave:
 
     def randomEtype(self):
         randomValue = randint(0, 1000)
-        if randomValue < 800:
+        if randomValue < 500:
             self.Etype = 0  # "Common"
             self.Size = 8
-        elif randomValue < 900:
+        elif randomValue < 700:
             self.Etype = 1  # "Rare"
             self.Size = 4
-        elif randomValue < 975:
+        elif randomValue < 950:
             self.Etype = 2  # "Epic"
             self.Size = 2
         else:
