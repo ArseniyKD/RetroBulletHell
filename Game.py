@@ -36,21 +36,31 @@ prevPlayerFireTime = prevEnemyMoveTime = prevEnemyFireTime = pygame.time.get_tic
 load = True
 
 if load:
-    save = SaveFile.loadFile()
-    if save is not None:
+    try:
+        save = SaveFile.loadFile()
+
         enemyWaves, enemyBullets, playerBullets, player = save
         for b in enemyBullets:
             bullet_list.add(b)
         for b in playerBullets:
             bullet_list.add(b)
-    else:
-        pass
-        #TODO implement error
 
-    player_list.add(player)
-    prevEnemySpawnTime = pygame.time.get_ticks()
+        player_list.add(player)
+        prevEnemySpawnTime = pygame.time.get_ticks()
 
-else:
+    except:
+        load = False
+
+        # clear anything that may have been edited
+        playerBullets = []
+        enemyBullets = []
+        enemyWaves = []
+        shared.enemy_list = pygame.sprite.Group()
+        bullet_list = pygame.sprite.Group()
+        player_list = pygame.sprite.Group()
+
+
+if not load:
     player = PlayerMovement.Player()   # spawn player
     # go to starting point
     player.rect.x = shared.width/2 - shared.imgWidth/2

@@ -18,11 +18,7 @@ def saveFile(enemyWaves, enemyBullets, playerBullets, player):
     ostream.write('p' + ',' + str(player.rect.x) + ',' + str(player.rect.y) + ',' + str(player.health))
 
 def loadFile():
-    try:
-        istream = open('save.txt', 'r')
-    except:
-        print("Can not find previous save files")
-        return
+    istream = open('save.txt', 'r')
     Input = istream.read().split()
     enemyWaves = []
     enemyBullets = []
