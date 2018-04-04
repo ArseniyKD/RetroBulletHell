@@ -13,5 +13,4 @@ enemyBulletStep = 5
 fps = 60
 clock = pygame.time.Clock()
 bullets = [] # list of bullets
-waveSize = int(width/(enemyImgWidth + enemyBuffer))
 enemy_list = pygame.sprite.Group()

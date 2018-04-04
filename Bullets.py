@@ -10,7 +10,7 @@ class Bullet(pygame.sprite.Sprite):
     '''
     Create a bullet fired from origin sprite
     '''
-    def __init__(self, Type, origin, angle = None):
+    def __init__(self, Type, origin = None, angle = None, x = None, y = None):
         self.type = Type
         self.active = True
         self.angle = angle  # angle from the origin
@@ -19,12 +19,17 @@ class Bullet(pygame.sprite.Sprite):
         self.image = pygame.image.load(os.path.join('images', 'bullet' + self.type + '.png')).convert_alpha()
         self.rect  = self.image.get_rect()
 
-        if self.type[0] == 'p':
-            self.rect.y = origin.rect.top
-        elif self.type[0] == 'e':
-            self.rect.y = origin.rect.bottom
+        if origin is not None:
+            if self.type[0] == 'p':
+                self.rect.y = origin.rect.top
+            elif self.type[0] == 'e':
+                self.rect.y = origin.rect.bottom
+            self.rect.x = origin.rect.x + origin.image.get_width()/2 - self.image.get_width()/2
 
-        self.rect.x = origin.rect.x + origin.image.get_width()/2 - self.image.get_width()/2
+        if x is not None:
+            self.rect.x = x
+        if y is not None:
+            self.rect.y = y
 
     def getActive(self):
         return self.active

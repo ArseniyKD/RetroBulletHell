@@ -103,3 +103,4 @@ ENV/
 
 # local files to ignore
 highScore
+save.txt

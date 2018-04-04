@@ -1,5 +1,4 @@
 import pygame  # load pygame keywords
-from PyZenity import *
 import sys     # let python use the file system
 import os      # help python identify the OS
 import Bullets
@@ -7,6 +6,7 @@ import PlayerMovement
 import shared
 import EnemyCreation
 import random
+import SaveFile
 
 # consider using BLACK = (23, 23, 23)
 BLACK = (0,0,0)
@@ -24,34 +24,54 @@ screen = pygame.display.set_mode((shared.width, shared.height)) # create screen 
 screen.fill(BLACK) # draw background
 backdropbox = screen.get_rect()
 
-player = PlayerMovement.Player()   # spawn player
-# go to starting point
-player.rect.x = shared.width/2 - shared.imgWidth/2
-player.rect.y = shared.height - shared.height/4 - shared.imgHeight/2
-
-player_list = pygame.sprite.Group()
-player_list.add(player)
-
 playerBullets = []
 enemyBullets = []
-bullet_list = pygame.sprite.Group()
-
 enemyWaves = []
+bullet_list = pygame.sprite.Group()
+player_list = pygame.sprite.Group()
 
 exit = False
 prevPlayerFireTime = prevEnemyMoveTime = prevEnemyFireTime = pygame.time.get_ticks()
-prevEnemySpawnTime = pygame.time.get_ticks() - enemyWaveDelay
+
+load = True
+
+if load:
+    save = SaveFile.loadFile()
+    if save is not None:
+        enemyWaves, enemyBullets, playerBullets, player = save
+        for b in enemyBullets:
+            bullet_list.add(b)
+        for b in playerBullets:
+            bullet_list.add(b)
+    else:
+        pass
+        #TODO implement error
+
+    player_list.add(player)
+    prevEnemySpawnTime = pygame.time.get_ticks()
+
+else:
+    player = PlayerMovement.Player()   # spawn player
+    # go to starting point
+    player.rect.x = shared.width/2 - shared.imgWidth/2
+    player.rect.y = shared.height - shared.height/4 - shared.imgHeight/2
+    player_list.add(player)
+
+    prevEnemySpawnTime = pygame.time.get_ticks() - enemyWaveDelay
+
 
 while not exit:
     flag = False
     for event in pygame.event.get():
         # quit the game if they press the x button on the window
         if event.type == pygame.QUIT:
-            save = Question('Would you like to save your game? This will overwrite any previous saved games.')
-            if save:
-                
             exit = True
             break
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                SaveFile.saveFile(enemyWaves, enemyBullets, playerBullets, player)
+
 
         # handle player movement
         flag = PlayerMovement.Move(event, player)
@@ -64,7 +84,7 @@ while not exit:
     # screen at once
     if (pygame.time.get_ticks() - prevEnemySpawnTime) >= enemyWaveDelay and (len(enemyWaves) < 4):
         prevEnemySpawnTime = pygame.time.get_ticks()
-        enemyWaves.append(EnemyCreation.EnemyWave(shared.waveSize))
+        enemyWaves.append(EnemyCreation.EnemyWave())
         enemyWaves[-1].CreateEnemyWave()
 
 
@@ -81,7 +101,6 @@ while not exit:
 
     if pygame.time.get_ticks() - prevEnemyFireTime >= enemyFireDelay:
         prevEnemyFireTime = pygame.time.get_ticks()
-        frontIndecies = []
         for i in enemyWaves[0].activeIndecies:
             randomAngle = random.randint(-20, 20)
             enemyBullets.append(Bullets.Bullet("e1", enemyWaves[0].IndexEnemyWave(i), randomAngle))

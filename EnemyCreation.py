@@ -8,12 +8,13 @@ import shared
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, Etype):
         self.Etype = Etype
-        if self.Etype == 0 or 1:
-            self.healthValue = 1
+
+        if self.Etype == 0 or self.Etype == 1:
+            self.health = 1
         elif self.Etype == 2:
-            self.healthValue == 4
+            self.health = 4
         elif self.Etype == 3:
-            self.healthValue == 10
+            self.health = 10
 
         self.reDraw = True
 
@@ -34,18 +35,18 @@ class Enemy(pygame.sprite.Sprite):
             return 3
 
     def setHealth(self, hp): # TODO: use this : , Etype):
-        self.healthValue = hp
+        self.health = hp
 
     def impact(self, Damage):
-        self.healthValue -= Damage
-        if self.healthValue <= 0:
+        self.health -= Damage
+        if self.health <= 0:
             self.reDraw = False
-            return True
+            return True # return trye if the enemy is killed
         else:
-            return False
+            return False # return false if the enemy is not killed
 
     def getHealth(self):
-        return self.healthValue
+        return self.health
 
     def setReDraw(self, flag: bool):
         self.reDraw = flag
@@ -58,9 +59,9 @@ class Enemy(pygame.sprite.Sprite):
 
 
 class EnemyWave:
-    def __init__(self, Size: int):
-        self.Etype = None
-        self.Size = Size
+    def __init__(self, Etype = None):
+        self.Etype = Etype
+        self.Size = None
         self.wave = aDict()
         # self.initialX = int((shared.width-self.Size*(shared.enemyImgWidth+shared.enemyBuffer)+shared.enemyBuffer)/2)
         self.initialX = None
@@ -73,15 +74,21 @@ class EnemyWave:
         randomValue = randint(0, 1000)
         if randomValue < 500:
             self.Etype = 0  # "Common"
-            self.Size = 8
         elif randomValue < 700:
             self.Etype = 1  # "Rare"
-            self.Size = 4
         elif randomValue < 950:
             self.Etype = 2  # "Epic"
-            self.Size = 2
         else:
             self.Etype = 3 # "Legendary"
+
+    def determineSize(self):
+        if self.Etype == 0:
+            self.Size = 8
+        elif self.Etype == 1:
+            self.Size = 4
+        elif self.Etype == 2:
+            self.Size = 2
+        elif self.Etype == 3:
             self.Size = 1
 
     def setInitialX(self, iX: int):
@@ -105,15 +112,22 @@ class EnemyWave:
     def getSize(self):
         return self.Size
 
-    def CreateEnemyWave(self):
-        self.randomEtype()
+    def CreateEnemyWave(self, initialX = None):
+        if self.Etype is None:
+            self.randomEtype()
+
         currEnemyData = Enemy(self.Etype)
+        self.determineSize()
 
         self.width = currEnemyData.rect.width
         self.height = currEnemyData.rect.height
         # self.Size = int(shared.width/(self.width+shared.enemyBuffer))
-        self.currentY = -(self.height+shared.enemyBuffer)
-        self.initialX = randint(shared.enemyBuffer, abs(shared.width-self.Size*(self.width+shared.enemyBuffer)))
+        if self.currentY is None:
+            self.currentY = -(self.height+shared.enemyBuffer)
+        if initialX is None:
+            self.initialX = randint(shared.enemyBuffer, abs(shared.width-self.Size*(self.width+shared.enemyBuffer)))
+        else:
+            self.initialX = initialX
 
         for i in range(self.Size):
             if i > 0:
