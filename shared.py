@@ -1,4 +1,5 @@
 import pygame
+import HighScoreTracking
 
 width = 500
 height = 700
@@ -15,3 +16,4 @@ clock = pygame.time.Clock()
 bullets = [] # list of bullets
 enemy_list = pygame.sprite.Group()
 score = 0
+playerName = ''

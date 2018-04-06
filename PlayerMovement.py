@@ -18,17 +18,28 @@ class Player(pygame.sprite.Sprite):
     '''
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.health = 3
+        self.health = 5
         self.movex = 0 # move along X
         self.movey = 0 # move along Y
         self.images = []  # note: all images are 39 by 43
-        for i in range(3):
+        self.masks = []
+        self.type0 = 0
+        self.type1 = 1
+        for i in range(4):
             self.images.append([])
+            if i < 3:
+                self.masks.append([])
             for j in range(3):
                 img = pygame.image.load(os.path.join('images','player' + str(i) + str(j) + '.png')).convert_alpha()
                 self.images[i].append(img)
-        self.image = self.images[0][1]
+                if i < 3:
+                    mask = pygame.mask.from_surface(self.images[i][j])
+                    self.masks[i].append(mask)
+
+        self.mask = self.masks[self.type0][self.type1]
+        self.image = self.images[self.type0][self.type1]
         self.rect  = self.image.get_rect()
+
 
     def changeHealth(self, change):
         self.health += change
@@ -92,8 +103,18 @@ class Player(pygame.sprite.Sprite):
         elif Movex > 0:
             j = 2
 
+        self.type0 = i
+        self.type1 = j
         self.constrain()
         self.image = self.images[i][j]
+        self.mask = self.masks[self.type0][self.type1]
+
+    def reset(self):
+        self.health = 5
+        self.movex = 0 # move along X
+        self.movey = 0 # move along Y
+        self.rect.x = shared.width/2 - shared.imgWidth/2
+        self.rect.y = shared.height - shared.height/4 - shared.imgHeight/2
 
 
 

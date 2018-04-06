@@ -7,6 +7,8 @@ import shared
 import EnemyCreation
 import random
 import SaveFile
+import GameOverScreen
+import time
 
 #BLACK = (23, 23, 23)
 BLACK = (0,0,0)
@@ -57,7 +59,8 @@ if load:
         enemyBullets = []
         enemyWaves = []
         shared.enemy_list = pygame.sprite.Group()
-        bullet_list = pygame.sprite.Group()
+        player_bullet_list = pygame.sprite.Group()
+        enemy_bullet_list = pygame.sprite.Group()
         player_list = pygame.sprite.Group()
         shared.score = 0
 
@@ -71,8 +74,29 @@ if not load:
 
     prevEnemySpawnTime = pygame.time.get_ticks() - enemyWaveDelay
 
+GameOver = False
+drawGameOverSequence = False
+Restart = False
 
 while not exit:
+    if Restart and not load:
+        player.reset()
+
+        # clear anything that may have been edited
+        playerBullets = []
+        enemyBullets = []
+        enemyWaves = []
+        shared.enemy_list = pygame.sprite.Group()
+        player_bullet_list = pygame.sprite.Group()
+        enemy_bullet_list = pygame.sprite.Group()
+        shared.score = 0
+
+        prevEnemySpawnTime = pygame.time.get_ticks() - enemyWaveDelay
+        prevPlayerFireTime = prevEnemyMoveTime = prevEnemyFireTime = pygame.time.get_ticks()
+
+        shared.playerName = ''
+        Restart = False
+
     flag = False
     for event in pygame.event.get():
         # quit the game if they press the x button on the window
@@ -80,109 +104,173 @@ while not exit:
             exit = True
             break
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                SaveFile.saveFile(enemyWaves, enemyBullets, playerBullets, player, shared.score)
+        if GameOver and not drawGameOverSequence:
+            Menu = GameOverScreen.gameOverInput(event)
+            if Menu:
+                GameOver = False
+                load = False
+                Restart = True
 
-
-        # handle player movement
-        flag = PlayerMovement.Move(event, player)
-        player.update()  # update player position
-
-    if not flag:
-        player.update()
-
-    # Spawn an enemy wave after an enemyWaveDelay, with a max of 4 waves on
-    # screen at once
-    if (pygame.time.get_ticks() - prevEnemySpawnTime) >= enemyWaveDelay and (len(enemyWaves) < 4):
-        prevEnemySpawnTime = pygame.time.get_ticks()
-        enemyWaves.append(EnemyCreation.EnemyWave())
-        enemyWaves[-1].CreateEnemyWave()
-
-    #update and move all enemy waves
-    if (pygame.time.get_ticks() - prevEnemyMoveTime >= enemyMoveDelay):
-        prevEnemyMoveTime = pygame.time.get_ticks()
-        toRemove = []
-        for i in range(len(enemyWaves)):
-            enemyWaves[i].move(enemyStep)
-            # remove enemies if they move off screen
-            if enemyWaves[i].currentY > shared.height :
-                for j in enemyWaves[i].activeIndecies:
-                    shared.enemy_list.remove(enemyWaves[i].IndexEnemyWave(j))
-                    shared.score -= enemyWaves[i].Etype
-                toRemove.append(enemyWaves[i])
-        for e in toRemove:
-            enemyWaves.remove(e)
-
-    # fire a player bullet
-    if pygame.time.get_ticks() - prevPlayerFireTime >= playerFireDelay:
-        prevPlayerFireTime = pygame.time.get_ticks()
-        playerBullets.append(Bullets.Bullet("p1", player))
-        bullet_list.add(playerBullets[-1])
-
-    # fire enemy bullet(s)
-    if pygame.time.get_ticks() - prevEnemyFireTime >= enemyFireDelay:
-        prevEnemyFireTime = pygame.time.get_ticks()
-        for i in enemyWaves[0].activeIndecies:
-            randomAngle = random.randint(-20, 20)
-            enemyBullets.append(Bullets.Bullet("e1", enemyWaves[0].IndexEnemyWave(i), randomAngle))
-            bullet_list.add(enemyBullets[-1])
-
-    # iterate through enemy bullets. move them and check for collisions
-    bToRemove = []
-    for b in enemyBullets:
-        flag = False
-        if b.rect.bottom >= player.rect.top and b.rect.top <= player.rect.bottom:
-            if b.rect.right >= player.rect.left and b.rect.left <= player.rect.right:
-                b.setActive(False)
-                flag = player.changeHealth(-1)
-                if flag:
-                    print("Player died")
-                    print(shared.score)
-                    pass  # TODO: add player death
-
-        if not b.getActive():
-            bToRemove.append(b)
         else:
-            b.update()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    SaveFile.saveFile(enemyWaves, enemyBullets, playerBullets, player, shared.score)
 
-    for b in bToRemove:
-        bullet_list.remove(b)
-        enemyBullets.remove(b)
+            # handle player movement
+            flag = PlayerMovement.Move(event, player)
+            player.update()  # update player position
 
-    # iterate through player bullets. move them and check for collisions
-    bToRemove = []
-    for b in playerBullets:
-        flag = False
-        for EWave in enemyWaves:
-            # if bullet is in range of wave
-            if b.rect.y <= EWave.getCurrentY() + shared.enemyImgHeight and EWave.getCurrentY() <= b.rect.y:
-                for i in EWave.activeIndecies:
-                    currEnemy = EWave.IndexEnemyWave(i)
-                    # if bullet is in range of enemy
-                    if b.rect.x <= currEnemy.rect.right and currEnemy.rect.left <= b.rect.x:
-                        b.setActive(False)
-                        EWave.impactEnemyAtX(i, 1)
-                        flag = True
-                        break
+    if GameOver:
+        if drawGameOverSequence:
+            GameOverScreen.gameOverSequence()
+            drawGameOverSequence = False
+
+    else:
+        if not flag:
+            player.update()
+
+        # Spawn an enemy wave after an enemyWaveDelay, with a max of 4 waves on
+        # screen at once
+        if (pygame.time.get_ticks() - prevEnemySpawnTime) >= enemyWaveDelay and (len(enemyWaves) < 4):
+            prevEnemySpawnTime = pygame.time.get_ticks()
+            enemyWaves.append(EnemyCreation.EnemyWave())
+            enemyWaves[-1].CreateEnemyWave()
+
+        #update and move all enemy waves
+        if (pygame.time.get_ticks() - prevEnemyMoveTime >= enemyMoveDelay):
+            prevEnemyMoveTime = pygame.time.get_ticks()
+            toRemove = []
+            for i in range(len(enemyWaves)):
+                enemyWaves[i].move(enemyStep)
+                # remove enemies if they move off screen
+                if enemyWaves[i].currentY > shared.height :
+                    for j in enemyWaves[i].activeIndecies:
+                        shared.enemy_list.remove(enemyWaves[i].IndexEnemyWave(j))
+                        shared.score -= enemyWaves[i].Etype*100*enemyWaves[i].Size
+                    toRemove.append(enemyWaves[i])
+            for e in toRemove:
+                enemyWaves.remove(e)
+
+        # fire a player bullet
+        if pygame.time.get_ticks() - prevPlayerFireTime >= playerFireDelay:
+            prevPlayerFireTime = pygame.time.get_ticks()
+            playerBullets.append(Bullets.Bullet("p1", player))
+            player_bullet_list.add(playerBullets[-1])
+
+        # fire enemy bullet(s)
+        if pygame.time.get_ticks() - prevEnemyFireTime >= enemyFireDelay:
+            prevEnemyFireTime = pygame.time.get_ticks()
+            randomIndex = random.randint(0, len(enemyWaves) - 1)
+            for i in enemyWaves[randomIndex].activeIndecies:
+                randomAngle = random.randint(-20, 20)
+                enemyBullets.append(Bullets.Bullet("e1", enemyWaves[randomIndex].IndexEnemyWave(i), randomAngle))
+                enemy_bullet_list.add(enemyBullets[-1])
+
+        screen.fill(BLACK) # draw background
+        shared.enemy_list.draw(screen) # draw enemyWaves
+        player_list.draw(screen) # draw player
+        # draw bullets
+        player_bullet_list.draw(screen)
+        enemy_bullet_list.draw(screen)
+
+        bToRemove = []
+        # check for collision between player and enemy bullets
+        collision = pygame.sprite.spritecollideany(player, enemy_bullet_list, pygame.sprite.collide_mask)
+        if collision is not None:
+            player.image = player.images[3][player.type1]
+            player_list.draw(screen) # draw player
+            pygame.display.update()
+            time.sleep(0.25)
+            player.image = player.images[player.type0][player.type1]
+            player_list.draw(screen) # draw player
+            pygame.display.update()
+            time.sleep(0.25)
+            player.image = player.images[3][player.type1]
+            player_list.draw(screen) # draw player
+            pygame.display.update()
+            time.sleep(0.25)
+            player.image = player.images[player.type0][player.type1]
+            player_list.draw(screen) # draw player
+            pygame.display.update()
+
+            flag = player.changeHealth(-1)
             if flag:
-                if EWave.getSize() <= 0:
-                    enemyWaves.remove(EWave)
-                    break
+                GameOver = drawGameOverSequence = True
 
-        if not b.getActive():
-            bToRemove.append(b)
-        else:
-            b.update()
 
-    for b in bToRemove:
-        bullet_list.remove(b)
-        playerBullets.remove(b)
+            collision.setActive(False)
 
-    screen.fill(BLACK) # draw background
-    shared.enemy_list.draw(screen) # draw enemyWaves
-    player_list.draw(screen) # draw player
-    bullet_list.draw(screen) # draw bullets
+
+        # iterate through enemy bullets. move them and check for collisions
+        for b in enemyBullets:
+            '''
+            flag = False
+            if b.rect.bottom >= player.rect.top and b.rect.top <= player.rect.bottom:
+                # if the player is hit
+                if b.rect.right >= player.rect.left and b.rect.left <= player.rect.right:
+                    b.setActive(False)
+
+                    player.image = player.images[3][player.type1]
+                    player_list.draw(screen) # draw player
+                    pygame.display.update()
+                    time.sleep(0.25)
+                    player.image = player.images[player.type0][player.type1]
+                    player_list.draw(screen) # draw player
+                    pygame.display.update()
+                    time.sleep(0.25)
+                    player.image = player.images[3][player.type1]
+                    player_list.draw(screen) # draw player
+                    pygame.display.update()
+                    time.sleep(0.25)
+                    player.image = player.images[player.type0][player.type1]
+                    player_list.draw(screen) # draw player
+                    pygame.display.update()
+
+                    flag = player.changeHealth(-1)
+                    if flag:
+                        GameOver = drawGameOverSequence = True
+            '''
+
+            if not b.getActive():
+                bToRemove.append(b)
+            else:
+                b.update()
+
+        for b in bToRemove:
+            enemy_bullet_list.remove(b)
+            enemyBullets.remove(b)
+
+        # iterate through player bullets. move them and check for collisions
+        bToRemove = []
+        for b in playerBullets:
+            flag = False
+            for EWave in enemyWaves:
+                # if bullet is in range of wave
+                if b.rect.y <= EWave.getCurrentY() + shared.enemyImgHeight and EWave.getCurrentY() <= b.rect.y:
+                    for i in EWave.activeIndecies:
+                        currEnemy = EWave.IndexEnemyWave(i)
+                        # if bullet is in range of enemy
+                        if b.rect.x <= currEnemy.rect.right and currEnemy.rect.left <= b.rect.x:
+                            b.setActive(False)
+                            EWave.impactEnemyAtX(i, 1)
+                            flag = True
+                            break
+                if flag:
+                    if EWave.getSize() <= 0:
+                        enemyWaves.remove(EWave)
+                        break
+
+            if not b.getActive():
+                bToRemove.append(b)
+            else:
+                b.update()
+
+        for b in bToRemove:
+            player_bullet_list.remove(b)
+            playerBullets.remove(b)
+
+
+
     pygame.display.flip()  # required to show changes to screen
     shared.clock.tick(shared.fps) # limit fps of game to shared.fps
 

@@ -107,7 +107,7 @@ class EnemyWave:
                 self.activeIndecies.remove(index)
                 self.Size -= 1
                 shared.enemy_list.remove(self.wave[impactX])
-                shared.score += self.Etype
+                shared.score += self.Etype*100
             return True
 
     def getSize(self):
