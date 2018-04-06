@@ -16,7 +16,7 @@ WHITE = (254,254,254)
 
 playerFireDelay = 250  # number of milliseconds between player firing
 enemyFireDelay = 1000 # number of milliseconds between enemy firing
-enemyWaveDelay = 3000 # number of milliseconds between enemyWave generation
+enemyWaveDelay = 2000 # number of milliseconds between enemyWave generation
 enemyMoveDelay = 40  # number of milliseconds between enemy waves moving down
 enemyStep = int((shared.enemyImgHeight+2.5*shared.enemyBuffer)*enemyMoveDelay/enemyWaveDelay)
 
@@ -31,6 +31,8 @@ enemyBullets = []
 enemyWaves = []
 bullet_list = pygame.sprite.Group()
 player_list = pygame.sprite.Group()
+player_bullet_list = pygame.sprite.Group()
+enemy_bullet_list = pygame.sprite.Group()
 
 exit = False
 prevPlayerFireTime = prevEnemyMoveTime = prevEnemyFireTime = pygame.time.get_ticks()
@@ -38,20 +40,19 @@ prevPlayerFireTime = prevEnemyMoveTime = prevEnemyFireTime = pygame.time.get_tic
 load = True
 
 if load:
-    try:
-        save = SaveFile.loadFile()
-
+    save = SaveFile.loadFile()
+    if save:
         enemyWaves, enemyBullets, playerBullets, player, shared.score = save
         for b in enemyBullets:
-            bullet_list.add(b)
+            enemy_bullet_list.add(b)
         for b in playerBullets:
-            bullet_list.add(b)
+            player_bullet_list.add(b)
 
         player_list.add(player)
         prevEnemySpawnTime = pygame.time.get_ticks()
 
 
-    except:
+    else:
         load = False
 
         # clear anything that may have been edited
