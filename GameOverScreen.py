@@ -60,6 +60,12 @@ while not exit:
         if event.type == pygame.QUIT:
             exit = True
             break
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if continue_box.collidepoint(event.pos):
+                print(name)
+                print("This file is off to better things :D")
+                exit = True
+                break
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_BACKSPACE:
                 name = name[:-1]
