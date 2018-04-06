@@ -40,18 +40,38 @@ def gameOverSequence():
     time.sleep(0.25)
     text_to_screen(screen, "GAME OVER", shared.width / 5 - 25, shared.height / 5, 75, GOLD)
     text_to_screen(screen, 'YOUR SCORE IS  {0}'.format(15000), shared.width / 10 - 30, shared.height / 3, 50, GOLD)
+    text_to_screen(screen, 'ENTER  NAME', 25, 400, 40, GOLD)
+    text_to_screen(screen, 'CONTINUE', 85,  500, 75, GOLD)
+    pygame.draw.rect(screen, WHITE, continue_box, 3)
+
+
 
 exit = False
 drawGameOverSequence = True
+name = ''
+input_box = pygame.Rect(shared.width / 2, 400, 250, 40)
+continue_box = pygame.Rect(75, 495, 345, 85)
 while not exit:
+    if drawGameOverSequence:
+        gameOverSequence()
+        drawGameOverSequence = False
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit = True
             break
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_BACKSPACE:
+                name = name[:-1]
+            elif event.key == pygame.K_RETURN:
+                continue
+            else:
+                if len(name) < 11:
+                    name += event.unicode
 
-    if drawGameOverSequence:
-        gameOverSequence()
-        drawGameOverSequence = False
+    pygame.draw.rect(screen, BLACK, input_box)
+    text_to_screen(screen, name, input_box.x, input_box.y, 40, GOLD)
+
 
 pygame.quit()
 sys.exit()
