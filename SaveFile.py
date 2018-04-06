@@ -3,19 +3,19 @@ import PlayerMovement
 import shared
 import EnemyCreation
 
-def saveFile(enemyWaves, enemyBullets, playerBullets, player):
+def saveFile(enemyWaves, enemyBullets, playerBullets, player, score):
     ostream = open('save.txt', 'w')
     for e in enemyWaves:
         ostream.write('e' + ',' + str(e.Etype) + ',' + str(e.currentY) + ',' + str(e.initialX))
         for i in e.activeIndecies:
-            ostream.write(',' + str(i))
+            ostream.write(',' + str(i) + ',' + str(e.IndexEnemyWave(i).health))
         ostream.write(' ')
     for b in enemyBullets:
         ostream.write('be' + ',' + str(b.type) + ',' + str(b.rect.x) + ',' + str(b.rect.y) + ',' + str(b.angle) + ' ')
     for b in playerBullets:
         ostream.write('bp' + ',' + str(b.type) + ',' + str(b.rect.x) + ',' + str(b.rect.y) + ' ')
-
-    ostream.write('p' + ',' + str(player.rect.x) + ',' + str(player.rect.y) + ',' + str(player.health))
+    ostream.write('p' + ',' + str(player.rect.x) + ',' + str(player.rect.y) + ',' + str(player.health) + ' ')
+    ostream.write('s' + ',' + str(score))
 
 def loadFile():
     istream = open('save.txt', 'r')
@@ -33,14 +33,22 @@ def loadFile():
             # and the initialX
             enemyWaves[-1].currentY = int(X[2])
             enemyWaves[-1].CreateEnemyWave(int(X[3])) # include initialX
-            x = list(map(int, X[4:]))
-            enemyWaves[-1].activeIndecies = x #record active enemies
+            dictionary = {}
+            j = 4
+            while j < len(X)-1:
+                dictionary[int(X[j])] = int(X[j+1])
+                j += 2
+
+            enemyWaves[-1].activeIndecies = list(dictionary.keys())
             for j in range(enemyWaves[-1].Size):
-                if j not in x:
+                if j not in dictionary.keys():
                     # remove inactive enemies from the list
                     shared.enemy_list.remove(enemyWaves[-1].IndexEnemyWave(j))
-                # set the correct size of the wave
-                enemyWaves[-1].Size = len(enemyWaves[-1].activeIndecies)
+                else:
+                    #
+                    enemyWaves[-1].IndexEnemyWave(j).health = dictionary[j]
+            # set the correct size of the wave
+            enemyWaves[-1].Size = len(enemyWaves[-1].activeIndecies)
 
         # create a bullet
         elif I[0] == 'b':
@@ -58,4 +66,7 @@ def loadFile():
             p.rect.y = int(X[2])
             p.health = int(X[3])
 
-    return (enemyWaves, enemyBullets, playerBullets, p)
+        elif I[0] == 's':
+            score = int(X[1])
+
+    return (enemyWaves, enemyBullets, playerBullets, p, score)

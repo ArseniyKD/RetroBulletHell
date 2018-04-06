@@ -14,3 +14,4 @@ fps = 60
 clock = pygame.time.Clock()
 bullets = [] # list of bullets
 enemy_list = pygame.sprite.Group()
+score = 0

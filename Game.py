@@ -8,7 +8,7 @@ import EnemyCreation
 import random
 import SaveFile
 
-# consider using BLACK = (23, 23, 23)
+#BLACK = (23, 23, 23)
 BLACK = (0,0,0)
 WHITE = (254,254,254)
 
@@ -39,7 +39,7 @@ if load:
     try:
         save = SaveFile.loadFile()
 
-        enemyWaves, enemyBullets, playerBullets, player = save
+        enemyWaves, enemyBullets, playerBullets, player, shared.score = save
         for b in enemyBullets:
             bullet_list.add(b)
         for b in playerBullets:
@@ -47,6 +47,7 @@ if load:
 
         player_list.add(player)
         prevEnemySpawnTime = pygame.time.get_ticks()
+
 
     except:
         load = False
@@ -58,6 +59,7 @@ if load:
         shared.enemy_list = pygame.sprite.Group()
         bullet_list = pygame.sprite.Group()
         player_list = pygame.sprite.Group()
+        shared.score = 0
 
 
 if not load:
@@ -80,7 +82,7 @@ while not exit:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                SaveFile.saveFile(enemyWaves, enemyBullets, playerBullets, player)
+                SaveFile.saveFile(enemyWaves, enemyBullets, playerBullets, player, shared.score)
 
 
         # handle player movement
@@ -97,18 +99,28 @@ while not exit:
         enemyWaves.append(EnemyCreation.EnemyWave())
         enemyWaves[-1].CreateEnemyWave()
 
-
+    #update and move all enemy waves
     if (pygame.time.get_ticks() - prevEnemyMoveTime >= enemyMoveDelay):
         prevEnemyMoveTime = pygame.time.get_ticks()
-        #update all enemy waves
+        toRemove = []
         for i in range(len(enemyWaves)):
             enemyWaves[i].move(enemyStep)
+            # remove enemies if they move off screen
+            if enemyWaves[i].currentY > shared.height :
+                for j in enemyWaves[i].activeIndecies:
+                    shared.enemy_list.remove(enemyWaves[i].IndexEnemyWave(j))
+                    shared.score -= enemyWaves[i].Etype
+                toRemove.append(enemyWaves[i])
+        for e in toRemove:
+            enemyWaves.remove(e)
 
+    # fire a player bullet
     if pygame.time.get_ticks() - prevPlayerFireTime >= playerFireDelay:
         prevPlayerFireTime = pygame.time.get_ticks()
         playerBullets.append(Bullets.Bullet("p1", player))
         bullet_list.add(playerBullets[-1])
 
+    # fire enemy bullet(s)
     if pygame.time.get_ticks() - prevEnemyFireTime >= enemyFireDelay:
         prevEnemyFireTime = pygame.time.get_ticks()
         for i in enemyWaves[0].activeIndecies:
@@ -116,6 +128,7 @@ while not exit:
             enemyBullets.append(Bullets.Bullet("e1", enemyWaves[0].IndexEnemyWave(i), randomAngle))
             bullet_list.add(enemyBullets[-1])
 
+    # iterate through enemy bullets. move them and check for collisions
     bToRemove = []
     for b in enemyBullets:
         flag = False
@@ -124,6 +137,8 @@ while not exit:
                 b.setActive(False)
                 flag = player.changeHealth(-1)
                 if flag:
+                    print("Player died")
+                    print(shared.score)
                     pass  # TODO: add player death
 
         if not b.getActive():
@@ -135,6 +150,7 @@ while not exit:
         bullet_list.remove(b)
         enemyBullets.remove(b)
 
+    # iterate through player bullets. move them and check for collisions
     bToRemove = []
     for b in playerBullets:
         flag = False
