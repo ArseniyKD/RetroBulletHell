@@ -28,6 +28,7 @@ def loadFile():
     enemyWaves = []
     enemyBullets = []
     playerBullets = []
+    score = 0
     for I in Input:
         X = I.split(',')
         # create an enemy wave
