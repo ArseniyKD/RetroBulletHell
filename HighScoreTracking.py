@@ -25,6 +25,9 @@ class HighScore:
     def getName(self):
         return self.name
 
+    def getAllHighScores(self):
+        return self.scores
+
     def updateHighScoresFile(self, newName):
         self.setName(newName)
         self.scores.append((self.score, self.getName()))
