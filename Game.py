@@ -9,6 +9,9 @@ import random
 import SaveFile
 import GameOverScreen
 import time
+import highScoreScreen
+import StartScreen
+import MenuScreen
 
 #BLACK = (23, 23, 23)
 BLACK = (0,0,0)
@@ -78,8 +81,17 @@ if not load:
 GameOver = False
 drawGameOverSequence = False
 Restart = False
+toHighScores = False
+toMenu = False
+startSequence = True
 
 while not exit:
+    if startSequence:
+        screen.fill(BLACK)
+        StartScreen.sequence()
+        toMenu = True
+        startSequence = False
+
     if Restart and not load:
         player.reset()
 
@@ -110,7 +122,9 @@ while not exit:
             if Menu:
                 GameOver = False
                 load = False
-                Restart = True
+                Restart = False
+                toHighScores = True
+                screen.fill(BLACK)
 
         else:
             if event.type == pygame.KEYDOWN:
@@ -120,6 +134,24 @@ while not exit:
             # handle player movement
             flag = PlayerMovement.Move(event, player)
             player.update()  # update player position
+
+    if toMenu:
+        screen.fill(BLACK)
+        flag3 = MenuScreen.sequence()
+        if flag3 == True:
+            Restart = True
+            toMenu = False
+        else:
+             toMenu = False
+             toHighScores = True
+
+    if toHighScores:
+        screen.fill(BLACK)
+        highScoreScreen.sequence()
+        toHighScores = False
+        toMenu = True
+
+
 
     if GameOver:
         if drawGameOverSequence:

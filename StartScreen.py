@@ -41,22 +41,18 @@ def StartScreenSequence():
     time.sleep(0.5)
     text_to_screen(screen, "just not the power button", 170, shared.height - 50, 15, WHITE)
 
-exit = False
-drawStartScreenSequence = True
+def sequence():
+    exit = False
+    drawStartScreenSequence = True
+    while not exit:
+        if drawStartScreenSequence:
+            StartScreenSequence()
+            drawStartScreenSequence = False
 
-while not exit:
-    if drawStartScreenSequence:
-        StartScreenSequence()
-        drawStartScreenSequence = False
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exit = True
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            exit = True
-        elif event.type == pygame.KEYDOWN:
-            exit = True
-
-print("Off to do better things")
-pygame.quit()
-sys.exit()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit = True
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                exit = True
+            elif event.type == pygame.KEYDOWN:
+                exit = True

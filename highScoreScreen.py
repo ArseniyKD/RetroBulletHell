@@ -19,6 +19,7 @@ screen.fill(BLACK)
 backdropbox = screen.get_rect()
 highScores = HighScoreTracking.HighScore()
 allScores = highScores.getAllHighScores()
+buttonBox = pygame.Rect(75, 595, 345, 85)
 
 def text_to_screen(screen, text, x, y, size = 50,
             color = (200, 000, 000), font_type = 'images/fonts/ARCADECLASSIC.TTF'):
@@ -60,6 +61,7 @@ def drawHighScoreScreen():
     pygame.draw.line(screen, GRAY, (0, 515), (shared.width, 515), 2)
     text_to_screen(screen, "10", 8, 470 + 42, 40, GOLD)
     pygame.draw.line(screen, GRAY, (0, 555), (shared.width, 555), 2)
+    pygame.draw.rect(screen, WHITE, buttonBox, 2)
     text_to_screen(screen, "MAIN MENU", 80, 600, 75, GOLD)
 
 
@@ -71,22 +73,24 @@ def drawHighScores():
         count += 1
 
 
-exit = False
-initHighScoreScreen = True
 
-while not exit:
-    if initHighScoreScreen:
-        drawHighScoreScreen()
-        drawHighScores()
-        initHighScoreScreen = False
+def sequence():
+    quit = False
+    exit = False
+    initHighScoreScreen = True
+    while not exit:
+        if initHighScoreScreen:
+            drawHighScoreScreen()
+            drawHighScores()
+            initHighScoreScreen = False
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exit = True
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            exit = True
-
-
-print("Off to do better things")
-pygame.quit()
-sys.exit()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit = True
+                quit = True
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if buttonBox.collidepoint(event.pos):
+                    exit = True
+    if quit:
+        pygame.quit()
+        sys.exit()

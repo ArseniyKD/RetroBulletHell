@@ -77,44 +77,52 @@ def chooseDifficulty(diffLevel):
 def processEvents(event):
     if  newGameBox.collidepoint(event.pos):
         print("Time to start a new game")
-        return False
+        return 2
     if continueGameBox.collidepoint(event.pos):
         print("Load an existing game or not do anything if no save file")
-        return False
+        return 2
     if lowDiffBox.collidepoint(event.pos):
         print("Low difficulty selected")
         chooseDifficulty(0)
-        return False
+        return 0
     if medDiffBox.collidepoint(event.pos):
         print("medium difficulty selected")
         chooseDifficulty(1)
-        return False
+        return 0
     if hiDiffBox.collidepoint(event.pos):
         print("high difficuly selected")
         chooseDifficulty(2)
-        return False
+        return 0
     if highScoresBox.collidepoint(event.pos):
         print("open the high scores screen")
-        return False
+        return 3
     if quitBox.collidepoint(event.pos):
         print("quit the game from the quit button in the menu")
-        return True
+        return 1
 
-exit = False
-initMenuScreen = True
+def sequence():
+    exit = False
+    quit = False
+    initMenuScreen = True
+    toStart = False
+    toHighScore = False
+    while not exit:
+        if initMenuScreen:
+            drawMenuScreen()
+            initMenuScreen = False
 
-while not exit:
-    if initMenuScreen:
-        drawMenuScreen()
-        initMenuScreen = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit = True
+                quit = True
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                exit = processEvents(event)
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exit = True
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            exit = processEvents(event)
+    if exit == 1 or quit:
+        pygame.quit()
+        sys.exit()
 
-
-print("Off to do better things")
-pygame.quit()
-sys.exit()
+    if exit == 2:
+        return 1
+    if exit == 3:
+        return 0
