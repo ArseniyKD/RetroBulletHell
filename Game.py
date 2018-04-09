@@ -49,10 +49,9 @@ startSequence = True
 
 exit = False
 while not exit:
-
     if startSequence:
         screen.fill(BLACK)
-        if StartScreen.sequence():
+        if StartScreen.StartScreenSequence():
             exit = True
         else:
             toMenu = True
@@ -130,8 +129,6 @@ while not exit:
         highScoreScreen.sequence()
         toHighScores = False
         toMenu = True
-
-
 
     if GameOver:
         if drawGameOverSequence:
@@ -239,28 +236,10 @@ while not exit:
         # check for collision between player and enemy bullets
         collision = pygame.sprite.spritecollideany(player, enemy_bullet_list, pygame.sprite.collide_mask)
         if collision is not None:
-            player.image = player.images[3][player.type1]
-            player_list.draw(screen) # draw player
-            pygame.display.update()
-            time.sleep(0.25)
-            player.image = player.images[player.type0][player.type1]
-            player_list.draw(screen) # draw player
-            pygame.display.update()
-            time.sleep(0.25)
-            player.image = player.images[3][player.type1]
-            player_list.draw(screen) # draw player
-            pygame.display.update()
-            time.sleep(0.25)
-            player.image = player.images[player.type0][player.type1]
-            player_list.draw(screen) # draw player
-            pygame.display.update()
-
-            flag = player.changeHealth(-1)
+            flag = player.changeHealth(-1, screen, player_list)
             if flag:
                 GameOver = drawGameOverSequence = True
                 Game = False
-
-
             collision.setActive(False)
 
 
@@ -304,7 +283,25 @@ while not exit:
             player_bullet_list.remove(b)
             playerBullets.remove(b)
 
+        for e in enemyWaves:
+            flag = False
+            if e.getCurrentY() <= player.rect.bottom and e.getCurrentY() + e.height >= player.rect.top:
+                for i in e.activeIndecies:
+                    currEnemy = e.IndexEnemyWave(i)
+                    # if bullet is in range of enemy
+                    if player.rect.x <= currEnemy.rect.right and currEnemy.rect.left <= player.rect.right:
 
+                        flag = player.changeHealth(-1, screen, player_list)
+                        if flag:
+                            GameOver = drawGameOverSequence = True
+                            Game = False
+                        e.impactEnemyAtX(i, 1)
+                        flag = True
+                        break
+            if flag:
+                if e.getSize() <= 0:
+                    enemyWaves.remove(e)
+                    break
 
     pygame.display.flip()  # required to show changes to screen
     shared.clock.tick(shared.fps) # limit fps of game to shared.fps

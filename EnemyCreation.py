@@ -8,6 +8,7 @@ import shared
 # the sprites we used for the enemies came from here:
 # https://opengameart.org/content/retro-spaceships
 
+
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, Etype):
         self.Etype = Etype

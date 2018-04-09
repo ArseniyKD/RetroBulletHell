@@ -34,23 +34,9 @@ def text_to_screen(screen, text, x, y, size = 50,
 def StartScreenSequence():
     BGimage = pygame.image.load(os.path.join('images','menuBG.png')).convert()
     screen.blit(BGimage, (0,0))
-    text_to_screen(screen, "RETRO", shared.width - 385, shared.height / 3 - 75, 100, GOLD)
-    time.sleep(0.5)
-    text_to_screen(screen, "BULLET", shared.width - 405, shared.height / 3, 100, BLUE)
-    time.sleep(0.5)
-    text_to_screen(screen, "HELL", shared.width - 345, shared.height / 3 + 75,  100, RED)
-    time.sleep(0.50)
-    text_to_screen(screen, "PRESS ANY BUTTON TO CONTINUE", 40, shared.height - 100, 30, WHITE)
-    time.sleep(0.5)
-    text_to_screen(screen, "just not the power button", 170, shared.height - 50, 15, WHITE)
 
-def sequence():
-    drawStartScreenSequence = True
+    startTime = pygame.time.get_ticks()
     while True:
-        if drawStartScreenSequence:
-            StartScreenSequence()
-            drawStartScreenSequence = False
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return True
@@ -58,3 +44,20 @@ def sequence():
                 return False
             elif event.type == pygame.KEYDOWN:
                 return False
+
+        curTime = pygame.time.get_ticks() - startTime
+        if curTime >= 6000:
+            text_to_screen(screen, "or the exit button", 195, shared.height - 30, 14, WHITE)
+        elif curTime >= 3500:
+            text_to_screen(screen, "just not the power button", 170, shared.height - 50, 15, WHITE)
+        elif curTime >= 2250:
+            text_to_screen(screen, "PRESS ANY BUTTON TO CONTINUE", 40, shared.height - 100, 30, WHITE)
+        elif curTime >= 1500:
+            text_to_screen(screen, "HELL", shared.width - 345, shared.height / 3 + 75,  100, RED)
+        elif curTime >= 750:
+            text_to_screen(screen, "BULLET", shared.width - 405, shared.height / 3, 100, BLUE)
+        else:
+            text_to_screen(screen, "RETRO", shared.width - 385, shared.height / 3 - 75, 100, GOLD)
+
+        pygame.display.flip()  # required to show changes to screen
+        shared.clock.tick(shared.fps) # limit fps of game to shared.fps

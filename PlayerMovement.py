@@ -2,6 +2,7 @@ import pygame  # load pygame keywords
 import sys     # let python use the file system
 import os      # help python identify the OS
 import shared
+import time
 
 xMax = shared.width  # allows us to place further restrictions later
 yMax = shared.height  # allows us to place further restrictions later
@@ -40,7 +41,25 @@ class Player(pygame.sprite.Sprite):
         self.rect  = self.image.get_rect()
 
 
-    def changeHealth(self, change):
+    def changeHealth(self, change, screen, player_list):
+        if change < 0:
+            self.image = self.images[3][self.type1]
+            player_list.draw(screen) # draw player
+            pygame.display.update()
+            time.sleep(0.25)
+            self.image = self.images[self.type0][self.type1]
+            player_list.draw(screen) # draw player
+            pygame.display.update()
+            time.sleep(0.25)
+            self.image = self.images[3][self.type1]
+            player_list.draw(screen) # draw player
+            pygame.display.update()
+            time.sleep(0.25)
+            self.image = self.images[self.type0][self.type1]
+            player_list.draw(screen) # draw player
+            pygame.display.update()
+
+
         self.health += change
         if self.health > 0:
             return False
