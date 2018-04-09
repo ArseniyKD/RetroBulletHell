@@ -54,8 +54,9 @@ while not exit:
         screen.fill(BLACK)
         if StartScreen.sequence():
             exit = True
-        toMenu = True
-        startSequence = False
+        else:
+            toMenu = True
+            startSequence = False
 
     if toMenu:
         screen.fill(BLACK)
@@ -186,7 +187,7 @@ while not exit:
                     enemyWaves[-1].currentY = enemyWaves[-2].currentY
             enemyWaves[-1].CreateEnemyWave()
 
-        #update and move all enemy waves
+        # update and move all enemy waves
         if (pygame.time.get_ticks() - prevEnemyMoveTime >= enemyMoveDelay):
             prevEnemyMoveTime = pygame.time.get_ticks()
             toRemove = []
@@ -211,10 +212,21 @@ while not exit:
         if pygame.time.get_ticks() - prevEnemyFireTime >= enemyFireDelay:
             prevEnemyFireTime = pygame.time.get_ticks()
             randomIndex = random.randint(0, len(enemyWaves) - 1)
-            for i in enemyWaves[randomIndex].activeIndecies:
-                randomAngle = random.randint(-20, 20)
-                enemyBullets.append(Bullets.Bullet("e1", enemyWaves[randomIndex].IndexEnemyWave(i), randomAngle))
-                enemy_bullet_list.add(enemyBullets[-1])
+            bulletNum = 1
+            if enemyWaves[randomIndex].Etype == 2:
+                bulletNum = 3*shared.difficulty
+            elif enemyWaves[randomIndex].Etype == 3:
+                bulletNum = 6*shared.difficulty
+            prevAngle = 0
+            for j in range(bulletNum):
+                for i in enemyWaves[randomIndex].activeIndecies:
+                    randomAngle = random.randint(-20, 20)
+                    if i == 0:
+                        if prevAngle - 2 < randomAngle and randomAngle < prevAngle + 2:
+                            randomAngle += random.randint(-5, 5)
+                    prevAngle = randomAngle
+                    enemyBullets.append(Bullets.Bullet("e1", enemyWaves[randomIndex].IndexEnemyWave(i), randomAngle))
+                    enemy_bullet_list.add(enemyBullets[-1])
 
         screen.fill(BLACK) # draw background
         shared.enemy_list.draw(screen) # draw enemyWaves
