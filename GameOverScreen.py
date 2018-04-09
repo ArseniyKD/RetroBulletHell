@@ -62,6 +62,8 @@ def gameOverInput(event):
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_BACKSPACE:
             shared.playerName = shared.playerName[:-1]
+        elif event.key == pygame.K_RETURN:
+            return True
         elif len(shared.playerName) < 11:
             shared.playerName += event.unicode
 

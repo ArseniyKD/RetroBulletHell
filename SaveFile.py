@@ -31,6 +31,7 @@ def loadFile():
     score = 0
     for I in Input:
         X = I.split(',')
+        
         # create an enemy wave
         if I[0] == 'e':
             # create the enemy wave and add it to the wave list

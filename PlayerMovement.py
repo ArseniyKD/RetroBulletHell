@@ -8,9 +8,8 @@ yMax = shared.height  # allows us to place further restrictions later
 
 # the following was created using the help of this tutorial:
 # https://opensource.com/article/17/12/game-python-add-a-player
-# And the sprites we used came from here:
+# And the sprites we used for the player came from here:
 # https://arboris.deviantart.com/art/Spaceship-sprites-43030167
-
 
 class Player(pygame.sprite.Sprite):
     '''
@@ -119,9 +118,9 @@ class Player(pygame.sprite.Sprite):
 
 
 # pass a pygame event to the function to check if it is a keypress or release
-# that affects mmovement.Returns true if the player moves, and false if it did
+# that affects mmovement. Returns true if the player moves, and false if it did
 # not
-# This allows for users to use wasd keys for movement
+# This allows for users to use wasd and arrow keys for movement
 def Move(event, player):
     flag = False
     if event.type == pygame.KEYDOWN:

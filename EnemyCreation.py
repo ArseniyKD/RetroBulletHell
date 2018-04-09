@@ -5,16 +5,19 @@ from avl_dict import AVLDict as aDict
 from random import *
 import shared
 
+# the sprites we used for the enemies came from here:
+# https://opengameart.org/content/retro-spaceships
+
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, Etype):
         self.Etype = Etype
 
         if self.Etype == 0 or self.Etype == 1:
-            self.health = 1
+            self.health = 1*shared.difficulty
         elif self.Etype == 2:
-            self.health = 4
+            self.health = 4*shared.difficulty
         elif self.Etype == 3:
-            self.health = 10
+            self.health = 10*shared.difficulty
 
         self.reDraw = True
 
@@ -65,7 +68,7 @@ class EnemyWave:
         self.wave = aDict()
         # self.initialX = int((shared.width-self.Size*(shared.enemyImgWidth+shared.enemyBuffer)+shared.enemyBuffer)/2)
         self.initialX = None
-        self.currentY = None
+        self.currentY = 0
         self.width = None
         self.height = None
         self.activeIndecies = []
@@ -123,8 +126,7 @@ class EnemyWave:
         self.width = currEnemyData.rect.width
         self.height = currEnemyData.rect.height
         # self.Size = int(shared.width/(self.width+shared.enemyBuffer))
-        if self.currentY is None:
-            self.currentY = -(self.height+shared.enemyBuffer)
+        self.currentY -= self.height+shared.enemyBuffer
         if initialX is None:
             self.initialX = randint(shared.enemyBuffer, abs(shared.width-self.Size*(self.width+shared.enemyBuffer)))
         else:

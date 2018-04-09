@@ -37,7 +37,11 @@ def text_to_screen(screen, text, x, y, size = 50,
     except Exception:
         print('Font Error, saw it coming')
 
+# the background image came from here:
+# https://pxhere.com/en/photo/610854
 def drawMenuScreen():
+    BGimage = pygame.image.load(os.path.join('images','menuBG.png')).convert()
+    screen.blit(BGimage, (0,0))
     text_to_screen(screen, "RETRO", 30, 20, 50, GOLD)
     text_to_screen(screen, "BULLET", 190, 20, 50, BLUE)
     text_to_screen(screen, "HELL", 370, 20, 50, RED)
@@ -47,11 +51,9 @@ def drawMenuScreen():
     text_to_screen(screen, "CONTINUE GAME", 15, 150 + 60, 70, GOLD)
     pygame.draw.rect(screen, GRAY, continueGameBox, 3)
     text_to_screen(screen, "DIFFICULTY", 50, 250 + 60, 75, GOLD)
-    text_to_screen(screen, "LOW", 50, 330 + 60, 50, GOLD)
+    chooseDifficulty(shared.difficulty)
     pygame.draw.rect(screen, GRAY, lowDiffBox, 3)
-    text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, WHITE)
     pygame.draw.rect(screen, GRAY, medDiffBox, 3)
-    text_to_screen(screen, "HIGH", 350, 330 + 60, 50, GOLD)
     pygame.draw.rect(screen, GRAY, hiDiffBox, 3)
     text_to_screen(screen, "HIGH SCORES", 40, 410 + 60, 75, GOLD)
     pygame.draw.rect(screen, GRAY, highScoresBox, 3)
@@ -60,7 +62,7 @@ def drawMenuScreen():
     pygame.display.update()
 
 def chooseDifficulty(diffLevel):
-    if diffLevel == 0:
+    if diffLevel == 0.5:
         text_to_screen(screen, "LOW", 50, 330 + 60, 50, WHITE)
         text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, GOLD)
         text_to_screen(screen, "HIGH", 350, 330 + 60, 50, GOLD)
@@ -68,36 +70,39 @@ def chooseDifficulty(diffLevel):
         text_to_screen(screen, "LOW", 50, 330 + 60, 50, GOLD)
         text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, WHITE)
         text_to_screen(screen, "HIGH", 350, 330 + 60, 50, GOLD)
-    if diffLevel == 2:
+    if diffLevel == 1.5:
         text_to_screen(screen, "LOW", 50, 330 + 60, 50, GOLD)
         text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, GOLD)
         text_to_screen(screen, "HIGH", 350, 330 + 60, 50, WHITE)
 
 
 def processEvents(event):
+    # Time to start a new game
     if  newGameBox.collidepoint(event.pos):
-        print("Time to start a new game")
         return 2
+    # Load an existing game or not do anything if no save file
     if continueGameBox.collidepoint(event.pos):
-        print("Load an existing game or not do anything if no save file")
-        return 2
+        return 4
+    # Low difficulty selected
     if lowDiffBox.collidepoint(event.pos):
-        print("Low difficulty selected")
-        chooseDifficulty(0)
+        chooseDifficulty(0.5)
+        shared.difficulty = 0.5
         return 0
+    # medium difficulty selected
     if medDiffBox.collidepoint(event.pos):
-        print("medium difficulty selected")
         chooseDifficulty(1)
+        shared.difficulty = 1
         return 0
+    # high difficuly selected
     if hiDiffBox.collidepoint(event.pos):
-        print("high difficuly selected")
-        chooseDifficulty(2)
+        chooseDifficulty(1.5)
+        shared.difficulty = 1.5
         return 0
+    # open the high scores screen
     if highScoresBox.collidepoint(event.pos):
-        print("open the high scores screen")
         return 3
+    # quit the game from the quit button in the menu
     if quitBox.collidepoint(event.pos):
-        print("quit the game from the quit button in the menu")
         return 1
 
 def sequence():
@@ -126,3 +131,5 @@ def sequence():
         return 1
     if exit == 3:
         return 0
+    if exit == 4:
+        return 2

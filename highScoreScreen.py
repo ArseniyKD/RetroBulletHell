@@ -33,7 +33,12 @@ def text_to_screen(screen, text, x, y, size = 50,
     except Exception:
         print('Font Error, saw it coming')
 
+# the background image came from here:
+# https://pxhere.com/en/photo/610854
 def drawHighScoreScreen():
+    BGimage = pygame.image.load(os.path.join('images','menuBG.png')).convert()
+    screen.blit(BGimage, (0,0))
+
     text_to_screen(screen, "HIGH   SCORES", 40, 20, 75, GOLD)
     pygame.draw.line(screen, WHITE, (0, 80), (shared.width, 80), 2)
     pygame.draw.line(screen, GRAY, (55, 105), (55, 555), 2)
@@ -72,8 +77,6 @@ def drawHighScores():
         text_to_screen(screen, score[0], 290, 150 + count*40, 50, WHITE)
         count += 1
 
-
-
 def sequence():
     quit = False
     exit = False
@@ -88,6 +91,9 @@ def sequence():
             if event.type == pygame.QUIT:
                 exit = True
                 quit = True
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    exit = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if buttonBox.collidepoint(event.pos):
                     exit = True

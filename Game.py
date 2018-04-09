@@ -12,6 +12,7 @@ import time
 import highScoreScreen
 import StartScreen
 import MenuScreen
+import PauseScreen
 
 #BLACK = (23, 23, 23)
 BLACK = (0,0,0)
@@ -29,6 +30,7 @@ screen = pygame.display.set_mode((shared.width, shared.height)) # create screen 
 screen.fill(BLACK) # draw background
 backdropbox = screen.get_rect()
 
+player = PlayerMovement.Player()
 playerBullets = []
 enemyBullets = []
 enemyWaves = []
@@ -36,66 +38,56 @@ bullet_list = pygame.sprite.Group()
 player_list = pygame.sprite.Group()
 player_bullet_list = pygame.sprite.Group()
 enemy_bullet_list = pygame.sprite.Group()
+player_list.add(player)
 
-exit = False
 prevPlayerFireTime = prevEnemyMoveTime = prevEnemyFireTime = pygame.time.get_ticks()
+prevEnemySpawnTime = pygame.time.get_ticks() - enemyWaveDelay
 
-load = True
-
-if load:
-    save = SaveFile.loadFile()
-    if save:
-        enemyWaves, enemyBullets, playerBullets, player, shared.score = save
-        for b in enemyBullets:
-            enemy_bullet_list.add(b)
-        for b in playerBullets:
-            player_bullet_list.add(b)
-
-        player_list.add(player)
-        prevEnemySpawnTime = pygame.time.get_ticks()
-
-
-    else:
-        load = False
-
-        # clear anything that may have been edited
-        playerBullets = []
-        enemyBullets = []
-        enemyWaves = []
-        shared.enemy_list = pygame.sprite.Group()
-        player_bullet_list = pygame.sprite.Group()
-        enemy_bullet_list = pygame.sprite.Group()
-        player_list = pygame.sprite.Group()
-        shared.score = 0
-
-
-if not load:
-    player = PlayerMovement.Player()   # spawn player
-    # go to starting point
-    player.rect.x = shared.width/2 - shared.imgWidth/2
-    player.rect.y = shared.height - shared.height/4 - shared.imgHeight/2
-    player_list.add(player)
-
-    prevEnemySpawnTime = pygame.time.get_ticks() - enemyWaveDelay
-
-GameOver = False
-drawGameOverSequence = False
-Restart = False
-toHighScores = False
-toMenu = False
+# declare flags to mimic functional state machine
+Restart = toHighScores = toMenu = drawGameOverSequence = GameOver = load = Game = False
 startSequence = True
 
+exit = False
 while not exit:
+
     if startSequence:
         screen.fill(BLACK)
-        StartScreen.sequence()
+        if StartScreen.sequence():
+            exit = True
         toMenu = True
         startSequence = False
 
-    if Restart and not load:
+    if toMenu:
+        screen.fill(BLACK)
+        menuFlag = MenuScreen.sequence()
+        if menuFlag == 1:
+            Restart = True
+            toHighScore = False
+            load = False
+        elif menuFlag == 0:
+            Restart = False
+            toHighScores = True
+            load = False
+        elif menuFlag == 2:
+            Restart = True
+            toHighScore = False
+            load = True
+
+        if shared.difficulty == 0.5:
+            enemyFireDelay = 1500
+        elif shared.difficulty == 1:
+            enemyFireDelay = 1000
+        elif shared.difficulty == 1.5:
+            enemyFireDelay = 750
+
+        toMenu = False
+
+
+    # clear anything that may have been edited
+    if Restart:
+        screen.fill(BLACK)
         player.reset()
 
-        # clear anything that may have been edited
         playerBullets = []
         enemyBullets = []
         enemyWaves = []
@@ -109,41 +101,28 @@ while not exit:
 
         shared.playerName = ''
         Restart = False
+        Game = True
 
-    flag = False
-    for event in pygame.event.get():
-        # quit the game if they press the x button on the window
-        if event.type == pygame.QUIT:
-            exit = True
-            break
+    # read a save file
+    if load:
+        save = SaveFile.loadFile()
+        if save:
+            enemyWaves, enemyBullets, playerBullets, player, shared.score = save
+            for b in enemyBullets:
+                enemy_bullet_list.add(b)
+            for b in playerBullets:
+                player_bullet_list.add(b)
 
-        if GameOver and not drawGameOverSequence:
-            Menu = GameOverScreen.gameOverInput(event)
-            if Menu:
-                GameOver = False
-                load = False
-                Restart = False
-                toHighScores = True
-                screen.fill(BLACK)
+            prevEnemySpawnTime = pygame.time.get_ticks()
+            player_list.empty()
+            player_list.add(player)
 
+        # restart if no save file is detected
         else:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    SaveFile.saveFile(enemyWaves, enemyBullets, playerBullets, player, shared.score)
-
-            # handle player movement
-            flag = PlayerMovement.Move(event, player)
-            player.update()  # update player position
-
-    if toMenu:
-        screen.fill(BLACK)
-        flag3 = MenuScreen.sequence()
-        if flag3 == True:
             Restart = True
-            toMenu = False
-        else:
-             toMenu = False
-             toHighScores = True
+
+        load = False
+        Game = True
 
     if toHighScores:
         screen.fill(BLACK)
@@ -157,8 +136,43 @@ while not exit:
         if drawGameOverSequence:
             GameOverScreen.gameOverSequence()
             drawGameOverSequence = False
+        else:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit = True
+                    break
 
-    else:
+                GameOverInput = GameOverScreen.gameOverInput(event)
+                if GameOverInput:
+                    GameOver = False
+                    Game = True
+                    load = False
+                    Restart = False
+                    toHighScores = True
+                    screen.fill(BLACK)
+
+    if Game:
+        flag = False
+        for event in pygame.event.get():
+            # quit the game if they press the x button on the window
+            if event.type == pygame.QUIT:
+                exit = True
+                break
+
+            else:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pauseFlag = PauseScreen.pauseSequence()
+                        if pauseFlag == 2:
+                            SaveFile.saveFile(enemyWaves, enemyBullets, playerBullets, player, shared.score)
+                        elif pauseFlag == 3:
+                            toMenu = True
+                            Game = False
+
+                # handle player movement
+                flag = PlayerMovement.Move(event, player)
+                player.update()  # update player position
+
         if not flag:
             player.update()
 
@@ -167,6 +181,9 @@ while not exit:
         if (pygame.time.get_ticks() - prevEnemySpawnTime) >= enemyWaveDelay and (len(enemyWaves) < 4):
             prevEnemySpawnTime = pygame.time.get_ticks()
             enemyWaves.append(EnemyCreation.EnemyWave())
+            if len(enemyWaves) > 1:
+                if enemyWaves[-2].currentY < -shared.enemyBuffer:
+                    enemyWaves[-1].currentY = enemyWaves[-2].currentY
             enemyWaves[-1].CreateEnemyWave()
 
         #update and move all enemy waves
@@ -229,6 +246,7 @@ while not exit:
             flag = player.changeHealth(-1)
             if flag:
                 GameOver = drawGameOverSequence = True
+                Game = False
 
 
             collision.setActive(False)
@@ -236,34 +254,6 @@ while not exit:
 
         # iterate through enemy bullets. move them and check for collisions
         for b in enemyBullets:
-            '''
-            flag = False
-            if b.rect.bottom >= player.rect.top and b.rect.top <= player.rect.bottom:
-                # if the player is hit
-                if b.rect.right >= player.rect.left and b.rect.left <= player.rect.right:
-                    b.setActive(False)
-
-                    player.image = player.images[3][player.type1]
-                    player_list.draw(screen) # draw player
-                    pygame.display.update()
-                    time.sleep(0.25)
-                    player.image = player.images[player.type0][player.type1]
-                    player_list.draw(screen) # draw player
-                    pygame.display.update()
-                    time.sleep(0.25)
-                    player.image = player.images[3][player.type1]
-                    player_list.draw(screen) # draw player
-                    pygame.display.update()
-                    time.sleep(0.25)
-                    player.image = player.images[player.type0][player.type1]
-                    player_list.draw(screen) # draw player
-                    pygame.display.update()
-
-                    flag = player.changeHealth(-1)
-                    if flag:
-                        GameOver = drawGameOverSequence = True
-            '''
-
             if not b.getActive():
                 bToRemove.append(b)
             else:

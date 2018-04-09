@@ -17,7 +17,6 @@ screen = pygame.display.set_mode((shared.width, shared.height))
 screen.fill(BLACK)
 backdropbox = screen.get_rect()
 
-
 def text_to_screen(screen, text, x, y, size = 50,
             color = (200, 000, 000), font_type = 'images/fonts/ARCADECLASSIC.TTF'):
     try:
@@ -30,7 +29,11 @@ def text_to_screen(screen, text, x, y, size = 50,
     except Exception:
         print('Font Error, saw it coming')
 
+# the background image came from here:
+# https://pxhere.com/en/photo/610854
 def StartScreenSequence():
+    BGimage = pygame.image.load(os.path.join('images','menuBG.png')).convert()
+    screen.blit(BGimage, (0,0))
     text_to_screen(screen, "RETRO", shared.width - 385, shared.height / 3 - 75, 100, GOLD)
     time.sleep(1)
     text_to_screen(screen, "BULLET", shared.width - 405, shared.height / 3, 100, BLUE)
@@ -42,17 +45,16 @@ def StartScreenSequence():
     text_to_screen(screen, "just not the power button", 170, shared.height - 50, 15, WHITE)
 
 def sequence():
-    exit = False
     drawStartScreenSequence = True
-    while not exit:
+    while True:
         if drawStartScreenSequence:
             StartScreenSequence()
             drawStartScreenSequence = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                exit = True
+                return True
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                exit = True
+                return False
             elif event.type == pygame.KEYDOWN:
-                exit = True
+                return False
