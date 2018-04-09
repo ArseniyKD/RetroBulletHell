@@ -6,6 +6,15 @@ import EnemyCreation
 import shared
 import math
 
+_image_library = {}
+def get_image(path):
+        global _image_library
+        image = _image_library.get(path)
+        if image == None:
+                image = pygame.image.load(path).convert_alpha()
+                _image_library[path] = image
+        return image
+
 class Bullet(pygame.sprite.Sprite):
     '''
     Create a bullet fired from origin sprite
@@ -16,7 +25,7 @@ class Bullet(pygame.sprite.Sprite):
         self.angle = angle  # angle from the origin
 
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join('images', 'bullet' + self.type + '.png')).convert_alpha()
+        self.image = get_image(os.path.join('images', 'bullet' + self.type + '.png'))
         self.rect  = self.image.get_rect()
 
         if origin is not None:

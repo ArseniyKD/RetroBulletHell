@@ -12,6 +12,24 @@ yMax = shared.height  # allows us to place further restrictions later
 # And the sprites we used for the player came from here:
 # https://arboris.deviantart.com/art/Spaceship-sprites-43030167
 
+_image_library = {}
+def get_image(path):
+        global _image_library
+        image = _image_library.get(path)
+        if image == None:
+            image = pygame.image.load(path).convert_alpha()
+            _image_library[path] = image
+        return image
+
+_mask_library = {}
+def get_mask(image):
+    global _mask_library
+    mask = _mask_library.get(image)
+    if mask == None:
+        mask = pygame.mask.from_surface(image)
+        _mask_library[image] = mask
+    return mask
+
 class Player(pygame.sprite.Sprite):
     '''
     Spawn a player
@@ -30,10 +48,11 @@ class Player(pygame.sprite.Sprite):
             if i < 3:
                 self.masks.append([])
             for j in range(3):
-                img = pygame.image.load(os.path.join('images','player' + str(i) + str(j) + '.png')).convert_alpha()
+                img = get_image(os.path.join('images','player' + str(i) + str(j) + '.png'))
                 self.images[i].append(img)
                 if i < 3:
-                    mask = pygame.mask.from_surface(self.images[i][j])
+                    # mask = pygame.mask.from_surface(self.images[i][j])
+                    mask = get_mask(self.images[i][j])
                     self.masks[i].append(mask)
 
         self.mask = self.masks[self.type0][self.type1]

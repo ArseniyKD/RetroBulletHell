@@ -5,10 +5,17 @@ from avl_dict import AVLDict as aDict
 from random import *
 import shared
 
+_image_library = {}
+def get_image(path):
+        global _image_library
+        image = _image_library.get(path)
+        if image == None:
+                image = pygame.image.load(path).convert_alpha()
+                _image_library[path] = image
+        return image
+
 # the sprites we used for the enemies came from here:
 # https://opengameart.org/content/retro-spaceships
-
-
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, Etype):
         self.Etype = Etype
@@ -23,8 +30,8 @@ class Enemy(pygame.sprite.Sprite):
         self.reDraw = True
 
         pygame.sprite.Sprite.__init__(self)
-        # self.image = pygame.image.load(os.path.join('images','enemy' + str(Etype) + '.png')).convert()
-        self.image = pygame.image.load(os.path.join('images','enemy' + str(self.Etype) + '.png')).convert_alpha()
+        # self.image = pygame.image.load(os.path.join('images','enemy' + str(self.Etype) + '.png')).convert_alpha()
+        self.image = get_image(os.path.join('images','enemy' + str(self.Etype) + '.png'))
         self.rect  = self.image.get_rect()
 
 
