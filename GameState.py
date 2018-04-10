@@ -67,8 +67,7 @@ def GameState(screen):
         # fire a player bullet
         if pygame.time.get_ticks() - gameStateVariables.prevPlayerFireTime >= shared.playerFireDelay:
             gameStateVariables.prevPlayerFireTime = pygame.time.get_ticks()
-            gameStateVariables.playerBullets.append(Bullets.Bullet("p1", gameStateVariables.player))
-            gameStateVariables.player_bullet_list.add(gameStateVariables.playerBullets[-1])
+            gameStateVariables.player_bullet_list.add(Bullets.Bullet("p1", gameStateVariables.player))
 
         # fire enemy bullet(s)
         if pygame.time.get_ticks() - gameStateVariables.prevEnemyFireTime >= shared.enemyFireDelay:
@@ -87,8 +86,7 @@ def GameState(screen):
                         if prevAngle - 2 < randomAngle and randomAngle < prevAngle + 2:
                             randomAngle += random.randint(-5, 5)
                     prevAngle = randomAngle
-                    gameStateVariables.enemyBullets.append(Bullets.Bullet("e1", gameStateVariables.enemyWaves[randomIndex].IndexEnemyWave(i), randomAngle))
-                    gameStateVariables.enemy_bullet_list.add(gameStateVariables.enemyBullets[-1])
+                    gameStateVariables.enemy_bullet_list.add(Bullets.Bullet("e1", gameStateVariables.enemyWaves[randomIndex].IndexEnemyWave(i), randomAngle))
 
         screen.fill(shared.BLACK) # draw background
         shared.enemy_list.draw(screen) # draw enemyWaves
@@ -107,7 +105,7 @@ def GameState(screen):
             collision.setActive(False)
 
         # iterate through enemy bullets. move them and check for collisions
-        for b in gameStateVariables.enemyBullets:
+        for b in gameStateVariables.enemy_bullet_list:
             if not b.getActive():
                 bToRemove.append(b)
             else:
@@ -115,11 +113,10 @@ def GameState(screen):
 
         for b in bToRemove:
             gameStateVariables.enemy_bullet_list.remove(b)
-            gameStateVariables.enemyBullets.remove(b)
 
         # iterate through player bullets. move them and check for collisions
         bToRemove = []
-        for b in gameStateVariables.playerBullets:
+        for b in gameStateVariables.player_bullet_list:
             flag = False
             for EWave in gameStateVariables.enemyWaves:
                 # if bullet is in range of wave
@@ -144,7 +141,6 @@ def GameState(screen):
 
         for b in bToRemove:
             gameStateVariables.player_bullet_list.remove(b)
-            gameStateVariables.playerBullets.remove(b)
 
         for e in gameStateVariables.enemyWaves:
             flag = False
