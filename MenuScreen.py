@@ -28,8 +28,8 @@ def drawMenuScreen():
     text_to_screen(screen, "BULLET", 190, 20, 50, shared.BLUE)
     text_to_screen(screen, "HELL", 370, 20, 50, shared.RED)
     pygame.draw.line(screen, shared.WHITE, (0, 80), (shared.width, 80), 2)
-    text_to_screen(screen, "NEW GAME", 110, 50 + 60, 75, shared.GOLD)
-    pygame.draw.rect(screen, shared.GRAY, newGameBox, 3)
+    text_to_screen(screen, "NEW GAME", 110, 50 + 60, 75, shared.WHITE)
+    pygame.draw.rect(screen, shared.WHITE, newGameBox, 3)
     canLoad = False
     try:
         istream = open('save.txt', 'r').close()
@@ -53,6 +53,23 @@ def drawMenuScreen():
 
     return canLoad
 
+def colourBox(curr, colour, diffLevel = shared.difficulty):
+    if curr == 0:
+        pygame.draw.rect(screen, colour, newGameBox, 3)
+    elif curr == 1:
+        pygame.draw.rect(screen, colour, continueGameBox, 3)
+    elif curr == 2:
+        if diffLevel == 0.5:
+            pygame.draw.rect(screen, colour, lowDiffBox, 3)
+        elif diffLevel == 1:
+            pygame.draw.rect(screen, colour, medDiffBox, 3)
+        elif diffLevel == 1.5:
+            pygame.draw.rect(screen, colour, hiDiffBox, 3)
+    elif curr == 3:
+        pygame.draw.rect(screen, colour, highScoresBox, 3)
+    elif curr == 4:
+        pygame.draw.rect(screen, colour, quitBox, 3)
+
 def chooseDifficulty(diffLevel):
     if diffLevel == 0.5:
         text_to_screen(screen, "LOW", 50, 330 + 60, 50, shared.WHITE)
@@ -67,8 +84,65 @@ def chooseDifficulty(diffLevel):
         text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, shared.GOLD)
         text_to_screen(screen, "HIGH", 350, 330 + 60, 50, shared.WHITE)
 
+def redrawButton(prev, curr):
+    if prev != curr:
+        buttonStrings = {0:("NEW GAME", 110, 50 + 60, 75), 1:("CONTINUE GAME", 15, 150 + 60, 70), 2:("DIFFICULTY", 50, 250 + 60, 75), 3:("HIGH SCORES", 40, 410 + 60, 75), 4: ("QUIT", 160, 530 + 60, 75)}
+        text_to_screen(screen, buttonStrings[prev][0], buttonStrings[prev][1], buttonStrings[prev][2], buttonStrings[prev][3], shared.GOLD)
+        if curr != 2:
+            text_to_screen(screen, buttonStrings[curr][0], buttonStrings[curr][1], buttonStrings[curr][2], buttonStrings[curr][3], shared.WHITE)
 
-def processEvents(event, canLoad):
+def processKeyEvents(event, prev, canLoad):
+    if event.key == pygame.K_RETURN:
+        return prev, True
+    curr = prev
+    if curr == 2:
+        if event.key == pygame.K_LEFT or event.key == ord('a'):
+            if shared.difficulty>0.5:
+                colourBox(curr, shared.GRAY, shared.difficulty)
+                shared.difficulty -= 0.5
+                colourBox(curr, shared.WHITE, shared.difficulty)
+                chooseDifficulty(shared.difficulty)
+        elif event.key == pygame.K_RIGHT or event.key == ord('d'):
+            if shared.difficulty<1.5:
+                colourBox(curr, shared.GRAY, shared.difficulty)
+                shared.difficulty += 0.5
+                colourBox(curr, shared.WHITE, shared.difficulty)
+                chooseDifficulty(shared.difficulty)
+    if event.key == pygame.K_UP or event.key == ord('w'):
+        if prev == 0:
+            curr == 4
+        else:
+            curr -= 1
+        if not canLoad and curr == 1:
+            curr = 0
+    elif event.key == pygame.K_DOWN or event.key == ord('s'):
+        if prev == 4:
+            curr == 0
+        else:
+            curr += 1
+        if not canLoad and curr == 1:
+            curr = 2
+
+    if prev != curr:
+        if prev == 2:
+            colourBox(2, shared.GRAY, shared.difficulty)
+        else:
+            colourBox(prev, shared.GRAY)
+
+        if curr == 2:
+            colourBox(2, shared.WHITE, shared.difficulty)
+        else:
+            colourBox(curr, shared.WHITE)
+
+    else:
+        colourBox(curr, shared.WHITE)
+        colourBox(prev, shared.GRAY)
+
+    redrawButton(prev, curr)
+
+    return curr, False
+
+def processMouseEvents(event, canLoad):
     # Time to start a new game
     if  newGameBox.collidepoint(event.pos):
         return 2
@@ -107,6 +181,7 @@ def sequence():
     toStart = False
     toHighScore = False
     canLoad = False
+    prev = 0
     while not exit:
         if initMenuScreen:
             canLoad = drawMenuScreen()
@@ -117,15 +192,17 @@ def sequence():
                 exit = True
                 quit = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                exit = processEvents(event, canLoad)
+                prev, exit = processMouseEvents(event, canLoad)
+            elif event.type == pygame.KEYDOWN:
+                prev, exit = processKeyEvents(event, prev, canLoad)
 
-    if exit == 1 or quit:
+    if exit == 4 or quit:
         pygame.quit()
         sys.exit()
 
-    if exit == 2:
+    if prev == 0:
         return 1
-    if exit == 3:
+    if prev == 3:
         return 0
-    if exit == 4:
+    if prev == 1:
         return 2
