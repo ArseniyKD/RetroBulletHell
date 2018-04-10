@@ -172,7 +172,7 @@ def processMouseEvents(event, canLoad):
         return 3
     # quit the game from the quit button in the menu
     if quitBox.collidepoint(event.pos):
-        return 1
+        return 4
 
 def sequence():
     exit = False
@@ -192,7 +192,7 @@ def sequence():
                 exit = True
                 quit = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                prev, exit = processMouseEvents(event, canLoad)
+                prev = exit = processMouseEvents(event, canLoad)
             elif event.type == pygame.KEYDOWN:
                 prev, exit = processKeyEvents(event, prev, canLoad)
 

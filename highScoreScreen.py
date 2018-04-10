@@ -63,8 +63,15 @@ def drawHighScores():
                 name += '   '
             else:
                 name += c
+        scoreVal = ''
+        originalVal = str(score[0])
+        for c in originalVal:
+            if c == '-':
+                scoreVal += 'N'
+            else:
+                scoreVal += c
         text_to_screen(screen, name, 60, 157 + count*40, 35, shared.WHITE)
-        text_to_screen(screen, score[0], 290, 150 + count*40, 50, shared.WHITE)
+        text_to_screen(screen, scoreVal, 290, 150 + count*40, 50, shared.WHITE)
         count += 1
 
 def sequence():
