@@ -3,6 +3,7 @@ import sys
 import os
 import shared
 import time
+import HighScoreTracking
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -13,6 +14,7 @@ pygame.font.init()
 screen = pygame.display.set_mode((shared.width, shared.height))
 screen.fill(BLACK)
 backdropbox = screen.get_rect()
+hs = HighScoreTracking.HighScore()
 
 input_box = pygame.Rect(shared.width / 2, 400, 250, 40)
 continue_box = pygame.Rect(75, 495, 345, 85)
@@ -58,14 +60,23 @@ def gameOverSequence():
 def gameOverInput(event):
     if event.type == pygame.MOUSEBUTTONDOWN:
         if continue_box.collidepoint(event.pos):
+            hs.ScoreKeeping(shared.score)
+            shared.score = 0
+            if shared.playerName == '':
+                hs.updateHighScoresFile('DEFAULT')
+            else:
+                hs.updateHighScoresFile(shared.playerName)
             return True
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_BACKSPACE:
             shared.playerName = shared.playerName[:-1]
-        elif event.key == pygame.K_RETURN:
-            return True
+        # elif event.key == pygame.K_RETURN:
+        #     return True
         elif len(shared.playerName) < 11:
-            shared.playerName += event.unicode
+            if event.unicode == ' ':
+                shared.playerName += '_'
+            else:
+                shared.playerName += event.unicode
 
     pygame.draw.rect(screen, BLACK, input_box)
     text_to_screen(screen, shared.playerName, input_box.x, input_box.y, 40, GOLD)

@@ -6,9 +6,13 @@ class HighScore:
         except:
             open('highScore', 'w').close()
             self.file = open('highScore', 'r+')
+        counter = 0
         for line in self.file:
             temp = line.strip().split()
             self.scores.append((int(temp[0]), temp[1]))
+            counter += 1
+            if counter > 9:
+                break
         self.file.close()
         self.score = 0
         self.name = ""

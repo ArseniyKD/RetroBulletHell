@@ -17,8 +17,8 @@ pygame.font.init()
 screen = pygame.display.set_mode((shared.width, shared.height))
 screen.fill(BLACK)
 backdropbox = screen.get_rect()
-highScores = HighScoreTracking.HighScore()
-allScores = highScores.getAllHighScores()
+
+
 buttonBox = pygame.Rect(75, 595, 345, 85)
 
 def text_to_screen(screen, text, x, y, size = 50,
@@ -72,6 +72,8 @@ def drawHighScoreScreen():
 
 def drawHighScores():
     count = 0
+    highScores = HighScoreTracking.HighScore()
+    allScores = highScores.getAllHighScores()
     for score in allScores:
         text_to_screen(screen, score[1], 60, 157 + count*40, 35, WHITE)
         text_to_screen(screen, score[0], 290, 150 + count*40, 50, WHITE)
