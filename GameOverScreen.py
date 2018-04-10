@@ -25,7 +25,6 @@ def gameOverSequence():
     time.sleep(0.50)
     screen.fill(shared.BLACK)
     pygame.display.update()
-<<<<<<< HEAD
     '''
     text_to_screen(screen, 'GAME OVER', shared.width / 5 - 25, shared.height / 5, 75, WHITE)
     time.sleep(0.25)
