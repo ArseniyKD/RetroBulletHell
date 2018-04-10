@@ -94,6 +94,7 @@ def redrawButton(prev, curr):
 def processKeyEvents(event, prev, canLoad):
     if event.key == pygame.K_RETURN:
         return prev, True
+
     curr = prev
     if curr == 2:
         if event.key == pygame.K_LEFT or event.key == ord('a'):
@@ -128,7 +129,6 @@ def processKeyEvents(event, prev, canLoad):
             colourBox(2, shared.GRAY, shared.difficulty)
         else:
             colourBox(prev, shared.GRAY)
-
         if curr == 2:
             colourBox(2, shared.WHITE, shared.difficulty)
         else:
@@ -145,34 +145,48 @@ def processKeyEvents(event, prev, canLoad):
 def processMouseEvents(event, canLoad):
     # Time to start a new game
     if  newGameBox.collidepoint(event.pos):
-        return 2
+        text_to_screen(screen, "NEW GAME", 110, 50 + 60, 75, shared.WHITE)
+        colourBox(0, shared.WHITE)
+        return 0, True
     # Load an existing game or not do anything if no save file
     if continueGameBox.collidepoint(event.pos) and canLoad:
-        return 4
+        text_to_screen(screen, "CONTINUE GAME", 15, 150 + 60, 70, shared.WHITE)
+        colourBox(1, shared.WHITE)
+        return 1, True
     # Low difficulty selected
     if lowDiffBox.collidepoint(event.pos):
+        colourBox(2, shared.GRAY, shared.difficulty)
         chooseDifficulty(1)
         shared.difficulty = 1
+        colourBox(2, shared.WHITE, shared.difficulty)
         shared.enemyFireDelay = 1500
-        return 0
+        return 2, False
     # medium difficulty selected
     if medDiffBox.collidepoint(event.pos):
+        colourBox(2, shared.GRAY, shared.difficulty)
         chooseDifficulty(2)
         shared.difficulty = 2
+        colourBox(2, shared.WHITE, shared.difficulty)
         shared.enemyFireDelay = 1000
-        return 0
+        return 2, False
     # high difficuly selected
     if hiDiffBox.collidepoint(event.pos):
+        colourBox(2, shared.GRAY, shared.difficulty)
         chooseDifficulty(3)
         shared.difficulty = 3
+        colourBox(2, shared.WHITE, shared.difficulty)
         shared.enemyFireDelay = 750
-        return 0
+        return 2, False
     # open the high scores screen
     if highScoresBox.collidepoint(event.pos):
-        return 3
+        text_to_screen(screen, "HIGH SCORES", 40, 410 + 60, 75, shared.WHITE)
+        colourBox(3, shared.WHITE)
+        return 3, True
     # quit the game from the quit button in the menu
     if quitBox.collidepoint(event.pos):
-        return 4
+        text_to_screen(screen, "QUIT", 160, 530 + 60, 75, shared.WHITE)
+        colourBox(4, shared.WHITE)
+        return 4, True
 
 def sequence():
     exit = False
@@ -192,17 +206,17 @@ def sequence():
                 exit = True
                 quit = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                prev = exit = processMouseEvents(event, canLoad)
+                prev, exit = processMouseEvents(event, canLoad)
             elif event.type == pygame.KEYDOWN:
                 prev, exit = processKeyEvents(event, prev, canLoad)
 
-    if exit == 4 or quit:
+    if prev == 4 or quit:
         pygame.quit()
         sys.exit()
 
-    if prev == 2:
+    if prev == 0:
         return 1
-    if prev == 3:
-        return 0
     if prev == 1:
         return 2
+    if prev == 3:
+        return 0
