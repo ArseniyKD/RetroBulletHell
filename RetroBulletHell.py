@@ -14,6 +14,7 @@ import StartScreen
 import MenuScreen
 import PauseScreen
 from GameState import GameState
+import gameStateVariables
 
 pygame.init()  # initialize module
 screen = pygame.display.set_mode((shared.width, shared.height)) # create screen surface on
@@ -21,18 +22,10 @@ screen = pygame.display.set_mode((shared.width, shared.height)) # create screen 
 screen.fill(shared.BLACK) # draw background
 backdropbox = screen.get_rect()
 
-player = PlayerMovement.Player()
-playerBullets = []
-enemyBullets = []
-enemyWaves = []
-bullet_list = pygame.sprite.Group()
-player_list = pygame.sprite.Group()
-player_bullet_list = pygame.sprite.Group()
-enemy_bullet_list = pygame.sprite.Group()
-player_list.add(player)
+gameStateVariables.player_list.add(gameStateVariables.player)
 
-prevPlayerFireTime = prevEnemyMoveTime = prevEnemyFireTime = pygame.time.get_ticks()
-prevEnemySpawnTime = pygame.time.get_ticks() - shared.enemyWaveDelay
+gameStateVariables.prevPlayerFireTime = gameStateVariables.prevEnemyMoveTime = gameStateVariables.prevEnemyFireTime = pygame.time.get_ticks()
+gameStateVariables.prevEnemySpawnTime = pygame.time.get_ticks() - shared.enemyWaveDelay
 
 Restart = toHighScores = toMenu = drawGameOverSequence = GameOver = load = Game = Quit = False
 startSequence = True
@@ -58,7 +51,7 @@ while not Quit:
         toMenu = False
 
     if Game:
-        check = GameState(screen, player, playerBullets, enemyBullets, enemyWaves, enemy_bullet_list, bullet_list, player_list, player_bullet_list, prevPlayerFireTime, prevEnemySpawnTime, prevEnemyMoveTime, prevEnemyFireTime)
+        check = GameState(screen)
         if check:
             Game = False
             toMenu = True
@@ -79,18 +72,18 @@ while not Quit:
 
     if Restart:
         screen.fill(shared.BLACK)
-        player.reset()
+        gameStateVariables.player.reset()
 
-        playerBullets = []
-        enemyBullets = []
-        enemyWaves = []
+        gameStateVariables.playerBullets = []
+        gameStateVariables.enemyBullets = []
+        gameStateVariables.enemyWaves = []
         shared.enemy_list = pygame.sprite.Group()
-        player_bullet_list = pygame.sprite.Group()
-        enemy_bullet_list = pygame.sprite.Group()
+        gameStateVariables.player_bullet_list = pygame.sprite.Group()
+        gameStateVariables.enemy_bullet_list = pygame.sprite.Group()
         shared.score = 0
 
-        prevEnemySpawnTime = pygame.time.get_ticks() - shared.enemyWaveDelay
-        prevPlayerFireTime = prevEnemyMoveTime = prevEnemyFireTime = pygame.time.get_ticks()
+        gameStateVariables.prevEnemySpawnTime = pygame.time.get_ticks() - shared.enemyWaveDelay
+        gameStateVariables.prevPlayerFireTime = gameStateVariables.prevEnemyMoveTime = gameStateVariables.prevEnemyFireTime = pygame.time.get_ticks()
 
         shared.playerName = ''
         Restart = False
@@ -98,31 +91,31 @@ while not Quit:
 
     if load:
         screen.fill(shared.BLACK)
-        player.reset()
+        gameStateVariables.player.reset()
 
-        playerBullets = []
-        enemyBullets = []
-        enemyWaves = []
+        gameStateVariables.playerBullets = []
+        gameStateVariables.enemyBullets = []
+        gameStateVariables.enemyWaves = []
         shared.enemy_list = pygame.sprite.Group()
-        player_bullet_list = pygame.sprite.Group()
-        enemy_bullet_list = pygame.sprite.Group()
+        gameStateVariables.player_bullet_list = pygame.sprite.Group()
+        gameStateVariables.enemy_bullet_list = pygame.sprite.Group()
         shared.score = 0
 
-        prevEnemySpawnTime = pygame.time.get_ticks() - shared.enemyWaveDelay
-        prevPlayerFireTime = prevEnemyMoveTime = prevEnemyFireTime = pygame.time.get_ticks()
+        gameStateVariables.prevEnemySpawnTime = pygame.time.get_ticks() - shared.enemyWaveDelay
+        gameStateVariables.prevPlayerFireTime = gameStateVariables.prevEnemyMoveTime = gameStateVariables.prevEnemyFireTime = pygame.time.get_ticks()
 
         shared.playerName = ''
         save = SaveFile.loadFile()
         if save:
-            enemyWaves, enemyBullets, playerBullets, player, shared.score = save
-            for b in enemyBullets:
-                enemy_bullet_list.add(b)
-            for b in playerBullets:
-                player_bullet_list.add(b)
+            gameStateVariables.enemyWaves, gameStateVariables.enemyBullets, gameStateVariables.playerBullets, gameStateVariables.player, shared.score = save
+            for b in gameStateVariables.enemyBullets:
+                gameStateVariables.enemy_bullet_list.add(b)
+            for b in gameStateVariables.playerBullets:
+                gameStateVariables.player_bullet_list.add(b)
 
-            prevEnemySpawnTime = pygame.time.get_ticks()
-            player_list.empty()
-            player_list.add(player)
+            gameStateVariables.prevEnemySpawnTime = pygame.time.get_ticks()
+            gameStateVariables.player_list.empty()
+            gameStateVariables.player_list.add(gameStateVariables.player)
 
         # restart if no save file is detected
         else:

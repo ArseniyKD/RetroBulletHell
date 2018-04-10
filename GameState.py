@@ -9,10 +9,9 @@ import time
 import PauseScreen
 import EnemyCreation
 import SaveFile
+import gameStateVariables
 
-def GameState(
-    screen, player, playerBullets, enemyBullets, enemyWaves, enemy_bullet_list, bullet_list, player_list, player_bullet_list, prevPlayerFireTime, prevEnemySpawnTime, prevEnemyMoveTime, prevEnemyFireTime
-    ):
+def GameState(screen):
     exit = False
     quit = False
     while not exit:
@@ -29,100 +28,100 @@ def GameState(
                     if event.key == pygame.K_ESCAPE:
                         pauseFlag = PauseScreen.pauseSequence()
                         if pauseFlag == 2:
-                            SaveFile.saveFile(enemyWaves, enemyBullets, playerBullets, player, shared.score)
+                            SaveFile.saveFile(gameStateVariables.enemyWaves, gameStateVariables.enemyBullets, gameStateVariables.playerBullets, gameStateVariables.player, shared.score)
                         elif pauseFlag == 3:
                             return True
 
                 # handle player movement
-                flag = PlayerMovement.Move(event, player)
-                player.update()  # update player position
+                flag = PlayerMovement.Move(event, gameStateVariables.player)
+                gameStateVariables.player.update()  # update player position
 
         if not flag:
-            player.update()
+            gameStateVariables.player.update()
 
         # Spawn an enemy wave after an enemyWaveDelay, with a max of 4 waves on
         # screen at once
-        if (pygame.time.get_ticks() - prevEnemySpawnTime) >= shared.enemyWaveDelay and (len(enemyWaves) < 4):
-            prevEnemySpawnTime = pygame.time.get_ticks()
-            enemyWaves.append(EnemyCreation.EnemyWave())
-            if len(enemyWaves) > 1:
-                if enemyWaves[-2].currentY < -shared.enemyBuffer:
-                    enemyWaves[-1].currentY = enemyWaves[-2].currentY
-            enemyWaves[-1].CreateEnemyWave()
+        if (pygame.time.get_ticks() - gameStateVariables.prevEnemySpawnTime) >= shared.enemyWaveDelay and (len(gameStateVariables.enemyWaves) < 4):
+            gameStateVariables.prevEnemySpawnTime = pygame.time.get_ticks()
+            gameStateVariables.enemyWaves.append(EnemyCreation.EnemyWave())
+            if len(gameStateVariables.enemyWaves) > 1:
+                if gameStateVariables.enemyWaves[-2].currentY < -shared.enemyBuffer:
+                    gameStateVariables.enemyWaves[-1].currentY = gameStateVariables.enemyWaves[-2].currentY
+            gameStateVariables.enemyWaves[-1].CreateEnemyWave()
 
         # update and move all enemy waves
-        if (pygame.time.get_ticks() - prevEnemyMoveTime >= shared.enemyMoveDelay):
-            prevEnemyMoveTime = pygame.time.get_ticks()
+        if (pygame.time.get_ticks() - gameStateVariables.prevEnemyMoveTime >= shared.enemyMoveDelay):
+            gameStateVariables.prevEnemyMoveTime = pygame.time.get_ticks()
             toRemove = []
-            for i in range(len(enemyWaves)):
-                enemyWaves[i].move(shared.enemyStep)
+            for i in range(len(gameStateVariables.enemyWaves)):
+                gameStateVariables.enemyWaves[i].move(shared.enemyStep)
                 # remove enemies if they move off screen
-                if enemyWaves[i].currentY > shared.height :
-                    for j in enemyWaves[i].activeIndecies:
-                        shared.enemy_list.remove(enemyWaves[i].IndexEnemyWave(j))
-                        shared.score -= int(enemyWaves[i].Etype*100*enemyWaves[i].Size*shared.difficulty)
-                    toRemove.append(enemyWaves[i])
+                if gameStateVariables.enemyWaves[i].currentY > shared.height :
+                    for j in gameStateVariables.enemyWaves[i].activeIndecies:
+                        shared.enemy_list.remove(gameStateVariables.enemyWaves[i].IndexEnemyWave(j))
+                        shared.score -= int(gameStateVariables.enemyWaves[i].Etype*100*gameStateVariables.enemyWaves[i].Size*shared.difficulty)
+                    toRemove.append(gameStateVariables.enemyWaves[i])
             for e in toRemove:
-                enemyWaves.remove(e)
+                gameStateVariables.enemyWaves.remove(e)
 
         # fire a player bullet
-        if pygame.time.get_ticks() - prevPlayerFireTime >= shared.playerFireDelay:
-            prevPlayerFireTime = pygame.time.get_ticks()
-            playerBullets.append(Bullets.Bullet("p1", player))
-            player_bullet_list.add(playerBullets[-1])
+        if pygame.time.get_ticks() - gameStateVariables.prevPlayerFireTime >= shared.playerFireDelay:
+            gameStateVariables.prevPlayerFireTime = pygame.time.get_ticks()
+            gameStateVariables.playerBullets.append(Bullets.Bullet("p1", gameStateVariables.player))
+            gameStateVariables.player_bullet_list.add(gameStateVariables.playerBullets[-1])
 
         # fire enemy bullet(s)
-        if pygame.time.get_ticks() - prevEnemyFireTime >= shared.enemyFireDelay:
-            prevEnemyFireTime = pygame.time.get_ticks()
-            randomIndex = random.randint(0, len(enemyWaves) - 1)
+        if pygame.time.get_ticks() - gameStateVariables.prevEnemyFireTime >= shared.enemyFireDelay:
+            gameStateVariables.prevEnemyFireTime = pygame.time.get_ticks()
+            randomIndex = random.randint(0, len(gameStateVariables.enemyWaves) - 1)
             bulletNum = 1
-            if enemyWaves[randomIndex].Etype == 2:
+            if gameStateVariables.enemyWaves[randomIndex].Etype == 2:
                 bulletNum = int(3*shared.difficulty)
-            elif enemyWaves[randomIndex].Etype == 3:
+            elif gameStateVariables.enemyWaves[randomIndex].Etype == 3:
                 bulletNum = int(6*shared.difficulty)
             prevAngle = 0
             for j in range(bulletNum):
-                for i in enemyWaves[randomIndex].activeIndecies:
+                for i in gameStateVariables.enemyWaves[randomIndex].activeIndecies:
                     randomAngle = random.randint(-20, 20)
                     if i == 0:
                         if prevAngle - 2 < randomAngle and randomAngle < prevAngle + 2:
                             randomAngle += random.randint(-5, 5)
                     prevAngle = randomAngle
-                    enemyBullets.append(Bullets.Bullet("e1", enemyWaves[randomIndex].IndexEnemyWave(i), randomAngle))
-                    enemy_bullet_list.add(enemyBullets[-1])
+                    gameStateVariables.enemyBullets.append(Bullets.Bullet("e1", gameStateVariables.enemyWaves[randomIndex].IndexEnemyWave(i), randomAngle))
+                    gameStateVariables.enemy_bullet_list.add(gameStateVariables.enemyBullets[-1])
 
         screen.fill(shared.BLACK) # draw background
         shared.enemy_list.draw(screen) # draw enemyWaves
-        player_list.draw(screen) # draw player
+        gameStateVariables.player_list.draw(screen) # draw player
         # draw bullets
-        player_bullet_list.draw(screen)
-        enemy_bullet_list.draw(screen)
+        gameStateVariables.player_bullet_list.draw(screen)
+        gameStateVariables.enemy_bullet_list.draw(screen)
 
         bToRemove = []
         # check for collision between player and enemy bullets
-        collision = pygame.sprite.spritecollideany(player, enemy_bullet_list, pygame.sprite.collide_mask)
+        collision = pygame.sprite.spritecollideany(gameStateVariables.player, gameStateVariables.enemy_bullet_list, pygame.sprite.collide_mask)
         if collision is not None:
-            flag = player.changeHealth(-1, screen, player_list)
+            flag = gameStateVariables.player.changeHealth(-1, screen, gameStateVariables.player_list)
             if flag:
                 exit = True
             collision.setActive(False)
 
         # iterate through enemy bullets. move them and check for collisions
-        for b in enemyBullets:
+        for b in gameStateVariables.enemyBullets:
             if not b.getActive():
                 bToRemove.append(b)
             else:
                 b.update()
 
         for b in bToRemove:
-            enemy_bullet_list.remove(b)
-            enemyBullets.remove(b)
+            gameStateVariables.enemy_bullet_list.remove(b)
+            gameStateVariables.enemyBullets.remove(b)
 
         # iterate through player bullets. move them and check for collisions
         bToRemove = []
-        for b in playerBullets:
+        for b in gameStateVariables.playerBullets:
             flag = False
-            for EWave in enemyWaves:
+            for EWave in gameStateVariables.enemyWaves:
                 # if bullet is in range of wave
                 if b.rect.y <= EWave.getCurrentY() + shared.enemyImgHeight and EWave.getCurrentY() <= b.rect.y:
                     for i in EWave.activeIndecies:
@@ -135,7 +134,7 @@ def GameState(
                             break
                 if flag:
                     if EWave.getSize() <= 0:
-                        enemyWaves.remove(EWave)
+                        gameStateVariables.enemyWaves.remove(EWave)
                         break
 
             if not b.getActive():
@@ -144,17 +143,17 @@ def GameState(
                 b.update()
 
         for b in bToRemove:
-            player_bullet_list.remove(b)
-            playerBullets.remove(b)
+            gameStateVariables.player_bullet_list.remove(b)
+            gameStateVariables.playerBullets.remove(b)
 
-        for e in enemyWaves:
+        for e in gameStateVariables.enemyWaves:
             flag = False
-            if e.getCurrentY() <= player.rect.bottom and e.getCurrentY() + e.height >= player.rect.top:
+            if e.getCurrentY() <= gameStateVariables.player.rect.bottom and e.getCurrentY() + e.height >= gameStateVariables.player.rect.top:
                 for i in e.activeIndecies:
                     currEnemy = e.IndexEnemyWave(i)
                     # if bullet is in range of enemy
-                    if player.rect.x <= currEnemy.rect.right and currEnemy.rect.left <= player.rect.right:
-                        flag = player.changeHealth(-1, screen, player_list)
+                    if gameStateVariables.player.rect.x <= currEnemy.rect.right and currEnemy.rect.left <= gameStateVariables.player.rect.right:
+                        flag = gameStateVariables.player.changeHealth(-1, screen, gameStateVariables.player_list)
                         if flag:
                             exit = True
                         e.impactEnemyAtX(i, 1)
@@ -162,7 +161,7 @@ def GameState(
                         break
             if flag:
                 if e.getSize() <= 0:
-                    enemyWaves.remove(e)
+                    gameStateVariables.enemyWaves.remove(e)
                     break
 
         pygame.display.flip()  # required to show changes to screen
