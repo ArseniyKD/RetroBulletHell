@@ -20,6 +20,9 @@ class HighScore:
     def ScoreKeeping(self, extraScore: int):
         self.score += extraScore
 
+    def resetScore(self):
+        self.score = 0
+
     def getScore(self):
         return self.score
 
@@ -40,3 +43,4 @@ class HighScore:
         for score in self.scores:
             self.file.write(str(score[0]) + " " + str(score[1]) + '\n')
         self.file.close()
+        self.resetScore()
