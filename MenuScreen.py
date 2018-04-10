@@ -214,7 +214,7 @@ def sequence():
         pygame.quit()
         sys.exit()
 
-    if prev == 0:
+    if prev == 2:
         return 1
     if prev == 1:
         return 2
