@@ -59,11 +59,11 @@ def colourBox(curr, colour, diffLevel = shared.difficulty):
     elif curr == 1:
         pygame.draw.rect(screen, colour, continueGameBox, 3)
     elif curr == 2:
-        if diffLevel == 0.5:
+        if diffLevel == 1:
             pygame.draw.rect(screen, colour, lowDiffBox, 3)
-        elif diffLevel == 1:
+        elif diffLevel == 2:
             pygame.draw.rect(screen, colour, medDiffBox, 3)
-        elif diffLevel == 1.5:
+        elif diffLevel == 3:
             pygame.draw.rect(screen, colour, hiDiffBox, 3)
     elif curr == 3:
         pygame.draw.rect(screen, colour, highScoresBox, 3)
