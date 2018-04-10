@@ -59,11 +59,11 @@ def colourBox(curr, colour, diffLevel = shared.difficulty):
     elif curr == 1:
         pygame.draw.rect(screen, colour, continueGameBox, 3)
     elif curr == 2:
-        if diffLevel == 0.5:
+        if diffLevel == 1:
             pygame.draw.rect(screen, colour, lowDiffBox, 3)
-        elif diffLevel == 1:
+        elif diffLevel == 2:
             pygame.draw.rect(screen, colour, medDiffBox, 3)
-        elif diffLevel == 1.5:
+        elif diffLevel == 3:
             pygame.draw.rect(screen, colour, hiDiffBox, 3)
     elif curr == 3:
         pygame.draw.rect(screen, colour, highScoresBox, 3)
@@ -71,15 +71,15 @@ def colourBox(curr, colour, diffLevel = shared.difficulty):
         pygame.draw.rect(screen, colour, quitBox, 3)
 
 def chooseDifficulty(diffLevel):
-    if diffLevel == 0.5:
+    if diffLevel == 1:
         text_to_screen(screen, "LOW", 50, 330 + 60, 50, shared.WHITE)
         text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, shared.GOLD)
         text_to_screen(screen, "HIGH", 350, 330 + 60, 50, shared.GOLD)
-    if diffLevel == 1:
+    if diffLevel == 2:
         text_to_screen(screen, "LOW", 50, 330 + 60, 50, shared.GOLD)
         text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, shared.WHITE)
         text_to_screen(screen, "HIGH", 350, 330 + 60, 50, shared.GOLD)
-    if diffLevel == 1.5:
+    if diffLevel == 3:
         text_to_screen(screen, "LOW", 50, 330 + 60, 50, shared.GOLD)
         text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, shared.GOLD)
         text_to_screen(screen, "HIGH", 350, 330 + 60, 50, shared.WHITE)
@@ -98,15 +98,15 @@ def processKeyEvents(event, prev, canLoad):
     curr = prev
     if curr == 2:
         if event.key == pygame.K_LEFT or event.key == ord('a'):
-            if shared.difficulty>0.5:
+            if shared.difficulty>1:
                 colourBox(curr, shared.GRAY, shared.difficulty)
-                shared.difficulty -= 0.5
+                shared.difficulty -= 1
                 colourBox(curr, shared.WHITE, shared.difficulty)
                 chooseDifficulty(shared.difficulty)
         elif event.key == pygame.K_RIGHT or event.key == ord('d'):
-            if shared.difficulty<1.5:
+            if shared.difficulty<3:
                 colourBox(curr, shared.GRAY, shared.difficulty)
-                shared.difficulty += 0.5
+                shared.difficulty += 1
                 colourBox(curr, shared.WHITE, shared.difficulty)
                 chooseDifficulty(shared.difficulty)
     if event.key == pygame.K_UP or event.key == ord('w'):
@@ -133,7 +133,7 @@ def processKeyEvents(event, prev, canLoad):
             colourBox(2, shared.WHITE, shared.difficulty)
         else:
             colourBox(curr, shared.WHITE)
-            
+
     else:
         colourBox(curr, shared.WHITE)
         colourBox(prev, shared.GRAY)
@@ -155,25 +155,25 @@ def processMouseEvents(event, canLoad):
         return 1, True
     # Low difficulty selected
     if lowDiffBox.collidepoint(event.pos):
-        chooseDifficulty(0.5)
+        chooseDifficulty(1)
         colourBox(2, shared.GRAY, shared.difficulty)
-        shared.difficulty = 0.5
+        shared.difficulty = 1
         colourBox(2, shared.WHITE, shared.difficulty)
         shared.enemyFireDelay = 1500
         return 2, True
     # medium difficulty selected
     if medDiffBox.collidepoint(event.pos):
-        chooseDifficulty(1)
+        chooseDifficulty(2)
         colourBox(2, shared.GRAY, shared.difficulty)
-        shared.difficulty = 1
+        shared.difficulty = 2
         colourBox(2, shared.WHITE, shared.difficulty)
         shared.enemyFireDelay = 1000
         return 2, True
     # high difficuly selected
     if hiDiffBox.collidepoint(event.pos):
-        chooseDifficulty(1.5)
+        chooseDifficulty(3
         colourBox(2, shared.GRAY, shared.difficulty)
-        shared.difficulty = 1.5
+        shared.difficulty = 3
         colourBox(2, shared.WHITE, shared.difficulty)
         shared.enemyFireDelay = 750
         return 2, True

@@ -17,7 +17,7 @@ bullets = [] # list of bullets
 enemy_list = pygame.sprite.Group()
 score = 0
 playerName = ''
-difficulty = 1
+difficulty = 2
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
