@@ -48,7 +48,15 @@ def drawMenuScreen():
     pygame.draw.line(screen, WHITE, (0, 80), (shared.width, 80), 2)
     text_to_screen(screen, "NEW GAME", 110, 50 + 60, 75, GOLD)
     pygame.draw.rect(screen, GRAY, newGameBox, 3)
-    text_to_screen(screen, "CONTINUE GAME", 15, 150 + 60, 70, GOLD)
+    canLoad = False
+    try:
+        istream = open('save.txt', 'r').close()
+        canLoad = True
+    except:
+        text_to_screen(screen, "CONTINUE GAME", 15, 150 + 60, 70, GRAY)
+    if canLoad:
+        text_to_screen(screen, "CONTINUE GAME", 15, 150 + 60, 70, GOLD)
+
     pygame.draw.rect(screen, GRAY, continueGameBox, 3)
     text_to_screen(screen, "DIFFICULTY", 50, 250 + 60, 75, GOLD)
     chooseDifficulty(shared.difficulty)
@@ -60,6 +68,8 @@ def drawMenuScreen():
     text_to_screen(screen, "QUIT", 160, 530 + 60, 75, GOLD)
     pygame.draw.rect(screen, GRAY, quitBox, 3)
     pygame.display.update()
+
+    return canLoad
 
 def chooseDifficulty(diffLevel):
     if diffLevel == 0.5:
@@ -76,12 +86,12 @@ def chooseDifficulty(diffLevel):
         text_to_screen(screen, "HIGH", 350, 330 + 60, 50, WHITE)
 
 
-def processEvents(event):
+def processEvents(event, canLoad):
     # Time to start a new game
     if  newGameBox.collidepoint(event.pos):
         return 2
     # Load an existing game or not do anything if no save file
-    if continueGameBox.collidepoint(event.pos):
+    if continueGameBox.collidepoint(event.pos) and canLoad:
         return 4
     # Low difficulty selected
     if lowDiffBox.collidepoint(event.pos):
@@ -111,9 +121,10 @@ def sequence():
     initMenuScreen = True
     toStart = False
     toHighScore = False
+    canLoad = False
     while not exit:
         if initMenuScreen:
-            drawMenuScreen()
+            canLoad = drawMenuScreen()
             initMenuScreen = False
 
         for event in pygame.event.get():
@@ -121,7 +132,7 @@ def sequence():
                 exit = True
                 quit = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                exit = processEvents(event)
+                exit = processEvents(event, canLoad)
 
     if exit == 1 or quit:
         pygame.quit()

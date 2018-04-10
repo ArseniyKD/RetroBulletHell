@@ -302,8 +302,8 @@ while not exit:
                     enemyWaves.remove(e)
                     break
 
-    pygame.display.flip()  # required to show changes to screen
-    shared.clock.tick(shared.fps) # limit fps of game to shared.fps
+        pygame.display.flip()  # required to show changes to screen
+        shared.clock.tick(shared.fps) # limit fps of game to shared.fps
 
 pygame.quit()
 sys.exit()
