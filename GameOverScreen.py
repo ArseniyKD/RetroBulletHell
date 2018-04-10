@@ -76,6 +76,12 @@ def sequence():
                 if event.key == pygame.K_BACKSPACE:
                     shared.playerName = shared.playerName[:-1]
                 elif event.key == pygame.K_RETURN:
+                    hs.ScoreKeeping(shared.score)
+                    shared.score = 0
+                    if shared.playerName == '':
+                        hs.updateHighScoresFile('DEFAULT')
+                    else:
+                        hs.updateHighScoresFile(shared.playerName)
                     return True
                 elif len(shared.playerName) < 11:
                     if event.unicode == ' ':
