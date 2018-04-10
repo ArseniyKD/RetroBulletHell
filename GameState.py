@@ -4,148 +4,24 @@ import os      # help python identify the OS
 import Bullets
 import PlayerMovement
 import shared
-import EnemyCreation
 import random
-import SaveFile
-import GameOverScreen
 import time
-import highScoreScreen
-import StartScreen
-import MenuScreen
 import PauseScreen
-# import highScoreTracking
+import EnemyCreation
+import SaveFile
 
-pygame.init()  # initialize module
-screen = pygame.display.set_mode((shared.width, shared.height)) # create screen surface on
-# which to draw things
-screen.fill(shared.BLACK) # draw background
-backdropbox = screen.get_rect()
-
-player = PlayerMovement.Player()
-playerBullets = []
-enemyBullets = []
-enemyWaves = []
-bullet_list = pygame.sprite.Group()
-player_list = pygame.sprite.Group()
-player_bullet_list = pygame.sprite.Group()
-enemy_bullet_list = pygame.sprite.Group()
-player_list.add(player)
-
-prevPlayerFireTime = prevEnemyMoveTime = prevEnemyFireTime = pygame.time.get_ticks()
-prevEnemySpawnTime = pygame.time.get_ticks() - shared.enemyWaveDelay
-
-# declare flags to mimic functional state machine
-Restart = toHighScores = toMenu = drawGameOverSequence = GameOver = load = Game = False
-startSequence = True
-
-exit = False
-while not exit:
-    if startSequence:
-        screen.fill(shared.BLACK)
-        if StartScreen.StartScreenSequence():
-            exit = True
-        else:
-            toMenu = True
-            startSequence = False
-
-    if toMenu:
-        screen.fill(shared.BLACK)
-        menuFlag = MenuScreen.sequence()
-        if menuFlag == 1:
-            Restart = True
-            toHighScore = False
-            load = False
-        elif menuFlag == 0:
-            Restart = False
-            toHighScores = True
-            load = False
-        elif menuFlag == 2:
-            Restart = True
-            toHighScore = False
-            load = True
-
-        if shared.difficulty == 0.5:
-            shared.enemyFireDelay = 1500
-        elif shared.difficulty == 1:
-            shared.enemyFireDelay = 1000
-        elif shared.difficulty == 1.5:
-            shared.enemyFireDelay = 750
-
-        toMenu = False
-
-
-    # clear anything that may have been edited
-    if Restart:
-        screen.fill(shared.BLACK)
-        player.reset()
-
-        playerBullets = []
-        enemyBullets = []
-        enemyWaves = []
-        shared.enemy_list = pygame.sprite.Group()
-        player_bullet_list = pygame.sprite.Group()
-        enemy_bullet_list = pygame.sprite.Group()
-        shared.score = 0
-
-        prevEnemySpawnTime = pygame.time.get_ticks() - shared.enemyWaveDelay
-        prevPlayerFireTime = prevEnemyMoveTime = prevEnemyFireTime = pygame.time.get_ticks()
-
-        shared.playerName = ''
-        Restart = False
-        Game = True
-
-    # read a save file
-    if load:
-        save = SaveFile.loadFile()
-        if save:
-            enemyWaves, enemyBullets, playerBullets, player, shared.score = save
-            for b in enemyBullets:
-                enemy_bullet_list.add(b)
-            for b in playerBullets:
-                player_bullet_list.add(b)
-
-            prevEnemySpawnTime = pygame.time.get_ticks()
-            player_list.empty()
-            player_list.add(player)
-
-        # restart if no save file is detected
-        else:
-            Restart = True
-
-        load = False
-        Game = True
-
-    if toHighScores:
-        screen.fill(shared.BLACK)
-        highScoreScreen.sequence()
-        toHighScores = False
-        toMenu = True
-
-    if GameOver:
-        if drawGameOverSequence:
-            GameOverScreen.gameOverSequence()
-            drawGameOverSequence = False
-        else:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit = True
-                    break
-
-                GameOverInput = GameOverScreen.gameOverInput(event)
-                if GameOverInput:
-                    GameOver = False
-                    Game = True
-                    load = False
-                    Restart = False
-                    toHighScores = True
-                    screen.fill(shared.BLACK)
-
-    if Game:
+def GameState(
+    screen, player, playerBullets, enemyBullets, enemyWaves, enemy_bullet_list, bullet_list, player_list, player_bullet_list, prevPlayerFireTime, prevEnemySpawnTime, prevEnemyMoveTime, prevEnemyFireTime
+    ):
+    exit = False
+    quit = False
+    while not exit:
         flag = False
         for event in pygame.event.get():
             # quit the game if they press the x button on the window
             if event.type == pygame.QUIT:
                 exit = True
+                quit = True
                 break
 
             else:
@@ -155,8 +31,7 @@ while not exit:
                         if pauseFlag == 2:
                             SaveFile.saveFile(enemyWaves, enemyBullets, playerBullets, player, shared.score)
                         elif pauseFlag == 3:
-                            toMenu = True
-                            Game = False
+                            return True
 
                 # handle player movement
                 flag = PlayerMovement.Move(event, player)
@@ -229,8 +104,7 @@ while not exit:
         if collision is not None:
             flag = player.changeHealth(-1, screen, player_list)
             if flag:
-                GameOver = drawGameOverSequence = True
-                Game = False
+                exit = True
             collision.setActive(False)
 
         # iterate through enemy bullets. move them and check for collisions
@@ -282,8 +156,7 @@ while not exit:
                     if player.rect.x <= currEnemy.rect.right and currEnemy.rect.left <= player.rect.right:
                         flag = player.changeHealth(-1, screen, player_list)
                         if flag:
-                            GameOver = drawGameOverSequence = True
-                            Game = False
+                            exit = True
                         e.impactEnemyAtX(i, 1)
                         flag = True
                         break
@@ -292,8 +165,9 @@ while not exit:
                     enemyWaves.remove(e)
                     break
 
-    pygame.display.flip()  # required to show changes to screen
-    shared.clock.tick(shared.fps) # limit fps of game to shared.fps
-
-pygame.quit()
-sys.exit()
+        pygame.display.flip()  # required to show changes to screen
+        shared.clock.tick(shared.fps) # limit fps of game to shared.fps
+    if quit:
+        pygame.quit()
+        sys.exit()
+    return False

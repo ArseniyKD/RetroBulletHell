@@ -69,16 +69,19 @@ def processEvents(event):
     if lowDiffBox.collidepoint(event.pos):
         chooseDifficulty(0.5)
         shared.difficulty = 0.5
+        shared.enemyFireDelay = 1500
         return 0
     # medium difficulty selected
     if medDiffBox.collidepoint(event.pos):
         chooseDifficulty(1)
         shared.difficulty = 1
+        shared.enemyFireDelay = 1000
         return 0
     # high difficuly selected
     if hiDiffBox.collidepoint(event.pos):
         chooseDifficulty(1.5)
         shared.difficulty = 1.5
+        shared.enemyFireDelay = 750
         return 0
     # open the high scores screen
     if highScoresBox.collidepoint(event.pos):

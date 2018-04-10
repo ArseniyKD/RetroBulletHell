@@ -28,9 +28,9 @@ def StartScreenSequence():
                 return False
 
         curTime = pygame.time.get_ticks() - startTime
-        if curTime >= 6000:
+        if curTime >= 3500:
             text_to_screen(screen, "or the exit button", 195, shared.height - 30, 14, shared.WHITE)
-        elif curTime >= 3500:
+        elif curTime >= 3000:
             text_to_screen(screen, "just not the power button", 170, shared.height - 50, 15, shared.WHITE)
         elif curTime >= 2250:
             text_to_screen(screen, "PRESS ANY BUTTON TO CONTINUE", 40, shared.height - 100, 30, shared.WHITE)

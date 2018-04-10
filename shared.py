@@ -26,3 +26,9 @@ BLUE = (0, 0, 255)
 GRAY = (134, 136, 138)
 RED = (255, 0, 0)
 DARKBLUE = (16,24,115)
+
+playerFireDelay = 250  # number of milliseconds between player firing
+enemyFireDelay = 1000 # number of milliseconds between enemy firing
+enemyWaveDelay = 2000 # number of milliseconds between enemyWave generation
+enemyMoveDelay = 40  # number of milliseconds between enemy waves moving down
+enemyStep = int((enemyImgHeight+2.5*enemyBuffer)*enemyMoveDelay/enemyWaveDelay)

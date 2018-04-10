@@ -41,31 +41,67 @@ def gameOverSequence():
     pygame.draw.rect(screen, shared.WHITE, continue_box, 3)
 
 
-def gameOverInput(event):
-    if event.type == pygame.MOUSEBUTTONDOWN:
-        if continue_box.collidepoint(event.pos):
-            hs.ScoreKeeping(shared.score)
-            shared.score = 0
-            if shared.playerName == '':
-                hs.updateHighScoresFile('DEFAULT')
-            else:
-                hs.updateHighScoresFile(shared.playerName)
-            return True
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_BACKSPACE:
-            shared.playerName = shared.playerName[:-1]
-        # elif event.key == pygame.K_RETURN:
-        #     return True
-        elif len(shared.playerName) < 11:
-            if event.unicode == ' ':
-                shared.playerName += '_'
-            else:
-                shared.playerName += event.unicode
+def sequence():
+    quit = False
+    exit = False
+    initGameOverScreen = True
+    while not exit:
+        if initGameOverScreen:
+            gameOverSequence()
+            initGameOverScreen = False
 
-    pygame.draw.rect(screen, shared.BLACK, input_box)
-    text_to_screen(screen, shared.playerName, input_box.x, input_box.y, 40, shared.GOLD)
-    return False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit = True
+                quit = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if continue_box.collidepoint(event.pos):
+                    hs.ScoreKeeping(shared.score)
+                    shared.score = 0
+                    if shared.playerName == '':
+                        hs.updateHighScoresFile('DEFAULT')
+                    else:
+                        hs.updateHighScoresFile(shared.playerName)
+                    return True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    shared.playerName = shared.playerName[:-1]
+                # elif event.key == pygame.K_RETURN:
+                #     return True
+                elif len(shared.playerName) < 11:
+                    if event.unicode == ' ':
+                        shared.playerName += '_'
+                    else:
+                        shared.playerName += event.unicode
 
+            pygame.draw.rect(screen, shared.BLACK, input_box)
+            text_to_screen(screen, shared.playerName, input_box.x, input_box.y, 40, shared.GOLD)
+    if quit:
+        pygame.quit()
+        sys.exit()
+    # if event.type == pygame.MOUSEBUTTONDOWN:
+    #     if continue_box.collidepoint(event.pos):
+    #         hs.ScoreKeeping(shared.score)
+    #         shared.score = 0
+    #         if shared.playerName == '':
+    #             hs.updateHighScoresFile('DEFAULT')
+    #         else:
+    #             hs.updateHighScoresFile(shared.playerName)
+    #         return True
+    # if event.type == pygame.KEYDOWN:
+    #     if event.key == pygame.K_BACKSPACE:
+    #         shared.playerName = shared.playerName[:-1]
+    #     # elif event.key == pygame.K_RETURN:
+    #     #     return True
+    #     elif len(shared.playerName) < 11:
+    #         if event.unicode == ' ':
+    #             shared.playerName += '_'
+    #         else:
+    #             shared.playerName += event.unicode
+    #
+    # pygame.draw.rect(screen, shared.BLACK, input_box)
+    # text_to_screen(screen, shared.playerName, input_box.x, input_box.y, 40, shared.GOLD)
+    # return False
 '''
 exit = False
 drawGameOverSequence = True
