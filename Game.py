@@ -32,8 +32,6 @@ screen.fill(BLACK) # draw background
 backdropbox = screen.get_rect()
 
 player = PlayerMovement.Player()
-playerBullets = []
-enemyBullets = []
 enemyWaves = []
 bullet_list = pygame.sprite.Group()
 player_list = pygame.sprite.Group()
@@ -88,9 +86,6 @@ while not exit:
     if Restart:
         screen.fill(BLACK)
         player.reset()
-
-        playerBullets = []
-        enemyBullets = []
         enemyWaves = []
         shared.enemy_list = pygame.sprite.Group()
         player_bullet_list = pygame.sprite.Group()
@@ -108,12 +103,7 @@ while not exit:
     if load:
         save = SaveFile.loadFile()
         if save:
-            enemyWaves, enemyBullets, playerBullets, player, shared.score = save
-            for b in enemyBullets:
-                enemy_bullet_list.add(b)
-            for b in playerBullets:
-                player_bullet_list.add(b)
-
+            enemyWaves, enemy_bullet_list, player_bullet_list, player, shared.score = save
             prevEnemySpawnTime = pygame.time.get_ticks()
             player_list.empty()
             player_list.add(player)
@@ -163,7 +153,7 @@ while not exit:
                     if event.key == pygame.K_ESCAPE:
                         pauseFlag = PauseScreen.pauseSequence()
                         if pauseFlag == 2:
-                            SaveFile.saveFile(enemyWaves, enemyBullets, playerBullets, player, shared.score)
+                            SaveFile.saveFile(enemyWaves, enemy_bullet_list, player_bullet_list, player, shared.score)
                         elif pauseFlag == 3:
                             toMenu = True
                             Game = False
@@ -203,8 +193,7 @@ while not exit:
         # fire a player bullet
         if pygame.time.get_ticks() - prevPlayerFireTime >= playerFireDelay:
             prevPlayerFireTime = pygame.time.get_ticks()
-            playerBullets.append(Bullets.Bullet("p1", player))
-            player_bullet_list.add(playerBullets[-1])
+            player_bullet_list.add(Bullets.Bullet("p1", player))
 
         # fire enemy bullet(s)
         if pygame.time.get_ticks() - prevEnemyFireTime >= enemyFireDelay:
@@ -223,8 +212,7 @@ while not exit:
                         if prevAngle - 2 < randomAngle and randomAngle < prevAngle + 2:
                             randomAngle += random.randint(-5, 5)
                     prevAngle = randomAngle
-                    enemyBullets.append(Bullets.Bullet("e1", enemyWaves[randomIndex].IndexEnemyWave(i), randomAngle))
-                    enemy_bullet_list.add(enemyBullets[-1])
+                    enemy_bullet_list.add(Bullets.Bullet("e1", enemyWaves[randomIndex].IndexEnemyWave(i), randomAngle))
 
         screen.fill(BLACK) # draw background
         shared.enemy_list.draw(screen) # draw enemyWaves
@@ -244,7 +232,7 @@ while not exit:
             collision.setActive(False)
 
         # iterate through enemy bullets. move them and check for collisions
-        for b in enemyBullets:
+        for b in enemy_bullet_list:
             if not b.getActive():
                 bToRemove.append(b)
             else:
@@ -252,11 +240,10 @@ while not exit:
 
         for b in bToRemove:
             enemy_bullet_list.remove(b)
-            enemyBullets.remove(b)
 
         # iterate through player bullets. move them and check for collisions
         bToRemove = []
-        for b in playerBullets:
+        for b in player_bullet_list:
             flag = False
             for EWave in enemyWaves:
                 # if bullet is in range of wave
@@ -281,7 +268,6 @@ while not exit:
 
         for b in bToRemove:
             player_bullet_list.remove(b)
-            playerBullets.remove(b)
 
         for e in enemyWaves:
             flag = False
