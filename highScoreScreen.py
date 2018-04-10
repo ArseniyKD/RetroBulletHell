@@ -57,7 +57,13 @@ def drawHighScores():
     highScores = HighScoreTracking.HighScore()
     allScores = highScores.getAllHighScores()
     for score in allScores:
-        text_to_screen(screen, score[1], 60, 157 + count*40, 35, shared.WHITE)
+        name = ''
+        for c in score[1]:
+            if c == '_':
+                name += '   '
+            else:
+                name += c
+        text_to_screen(screen, name, 60, 157 + count*40, 35, shared.WHITE)
         text_to_screen(screen, score[0], 290, 150 + count*40, 50, shared.WHITE)
         count += 1
 

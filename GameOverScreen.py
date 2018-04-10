@@ -25,6 +25,7 @@ def gameOverSequence():
     time.sleep(0.50)
     screen.fill(shared.BLACK)
     pygame.display.update()
+<<<<<<< HEAD
     '''
     text_to_screen(screen, 'GAME OVER', shared.width / 5 - 25, shared.height / 5, 75, WHITE)
     time.sleep(0.25)
@@ -74,8 +75,14 @@ def sequence():
                     else:
                         shared.playerName += event.unicode
 
+            playerName = ''
+            for c in shared.playerName:
+                if c == '_':
+                    playerName += '   '
+                else:
+                    playerName += c
             pygame.draw.rect(screen, shared.BLACK, input_box)
-            text_to_screen(screen, shared.playerName, input_box.x, input_box.y, 40, shared.GOLD)
+            text_to_screen(screen, playerName, input_box.x, input_box.y, 40, shared.GOLD)
     if quit:
         pygame.quit()
         sys.exit()
