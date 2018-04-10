@@ -211,9 +211,9 @@ while not exit:
             randomIndex = random.randint(0, len(enemyWaves) - 1)
             bulletNum = 1
             if enemyWaves[randomIndex].Etype == 2:
-                bulletNum = 3*shared.difficulty
+                bulletNum = int(3*shared.difficulty)
             elif enemyWaves[randomIndex].Etype == 3:
-                bulletNum = 6*shared.difficulty
+                bulletNum = int(6*shared.difficulty)
             prevAngle = 0
             for j in range(bulletNum):
                 for i in enemyWaves[randomIndex].activeIndecies:
@@ -241,7 +241,6 @@ while not exit:
                 GameOver = drawGameOverSequence = True
                 Game = False
             collision.setActive(False)
-
 
         # iterate through enemy bullets. move them and check for collisions
         for b in enemyBullets:
@@ -290,7 +289,6 @@ while not exit:
                     currEnemy = e.IndexEnemyWave(i)
                     # if bullet is in range of enemy
                     if player.rect.x <= currEnemy.rect.right and currEnemy.rect.left <= player.rect.right:
-
                         flag = player.changeHealth(-1, screen, player_list)
                         if flag:
                             GameOver = drawGameOverSequence = True

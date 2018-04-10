@@ -31,15 +31,15 @@ def loadFile():
     score = 0
     for I in Input:
         X = I.split(',')
-        
+
         # create an enemy wave
         if I[0] == 'e':
-            # create the enemy wave and add it to the wave list
-            enemyWaves.append(EnemyCreation.EnemyWave(int(X[1]))) # include Etype of wave
-            # create enemies in the enemy wave, according to their Etype
-            # and the initialX
-            enemyWaves[-1].currentY = int(X[2])
-            enemyWaves[-1].CreateEnemyWave(int(X[3])) # include initialX
+            # create the enemy wave and add it to the wave list and include
+            # the Etype
+            enemyWaves.append(EnemyCreation.EnemyWave(int(X[1])))
+            # create enemies in the enemy wave, according to their Etype,
+            # the initialX, and the current Y
+            enemyWaves[-1].CreateEnemyWave(int(X[3]), int(X[2]))
             dictionary = {}
             j = 4
             while j < len(X)-1:

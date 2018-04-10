@@ -124,7 +124,7 @@ class EnemyWave:
     def getSize(self):
         return self.Size
 
-    def CreateEnemyWave(self, initialX = None):
+    def CreateEnemyWave(self, initialX = None, currentY = None):
         if self.Etype is None:
             self.randomEtype()
 
@@ -134,7 +134,10 @@ class EnemyWave:
         self.width = currEnemyData.rect.width
         self.height = currEnemyData.rect.height
         # self.Size = int(shared.width/(self.width+shared.enemyBuffer))
-        self.currentY -= self.height+shared.enemyBuffer
+        if currentY == None:
+            self.currentY -= self.height+shared.enemyBuffer
+        else:
+            self.currentY = currentY
         if initialX is None:
             self.initialX = randint(shared.enemyBuffer, abs(shared.width-self.Size*(self.width+shared.enemyBuffer)))
         else:
