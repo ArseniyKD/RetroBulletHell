@@ -21,11 +21,11 @@ class Enemy(pygame.sprite.Sprite):
         self.Etype = Etype
 
         if self.Etype == 0 or self.Etype == 1:
-            self.health = 1*shared.difficulty
+            self.health = int(0.5*shared.difficulty + 0.5)
         elif self.Etype == 2:
-            self.health = 4*shared.difficulty
+            self.health = 2*shared.difficulty
         elif self.Etype == 3:
-            self.health = 10*shared.difficulty
+            self.health = 5*shared.difficulty
 
         self.reDraw = True
 

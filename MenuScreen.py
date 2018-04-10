@@ -71,15 +71,15 @@ def colourBox(curr, colour, diffLevel = shared.difficulty):
         pygame.draw.rect(screen, colour, quitBox, 3)
 
 def chooseDifficulty(diffLevel):
-    if diffLevel == 0.5:
+    if diffLevel == 1:
         text_to_screen(screen, "LOW", 50, 330 + 60, 50, shared.WHITE)
         text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, shared.GOLD)
         text_to_screen(screen, "HIGH", 350, 330 + 60, 50, shared.GOLD)
-    if diffLevel == 1:
+    if diffLevel == 2:
         text_to_screen(screen, "LOW", 50, 330 + 60, 50, shared.GOLD)
         text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, shared.WHITE)
         text_to_screen(screen, "HIGH", 350, 330 + 60, 50, shared.GOLD)
-    if diffLevel == 1.5:
+    if diffLevel == 3:
         text_to_screen(screen, "LOW", 50, 330 + 60, 50, shared.GOLD)
         text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, shared.GOLD)
         text_to_screen(screen, "HIGH", 350, 330 + 60, 50, shared.WHITE)
@@ -97,15 +97,15 @@ def processKeyEvents(event, prev, canLoad):
     curr = prev
     if curr == 2:
         if event.key == pygame.K_LEFT or event.key == ord('a'):
-            if shared.difficulty>0.5:
+            if shared.difficulty>1:
                 colourBox(curr, shared.GRAY, shared.difficulty)
-                shared.difficulty -= 0.5
+                shared.difficulty -= 1
                 colourBox(curr, shared.WHITE, shared.difficulty)
                 chooseDifficulty(shared.difficulty)
         elif event.key == pygame.K_RIGHT or event.key == ord('d'):
-            if shared.difficulty<1.5:
+            if shared.difficulty<3:
                 colourBox(curr, shared.GRAY, shared.difficulty)
-                shared.difficulty += 0.5
+                shared.difficulty += 1
                 colourBox(curr, shared.WHITE, shared.difficulty)
                 chooseDifficulty(shared.difficulty)
     if event.key == pygame.K_UP or event.key == ord('w'):
@@ -151,20 +151,20 @@ def processMouseEvents(event, canLoad):
         return 4
     # Low difficulty selected
     if lowDiffBox.collidepoint(event.pos):
-        chooseDifficulty(0.5)
-        shared.difficulty = 0.5
+        chooseDifficulty(1)
+        shared.difficulty = 1
         shared.enemyFireDelay = 1500
         return 0
     # medium difficulty selected
     if medDiffBox.collidepoint(event.pos):
-        chooseDifficulty(1)
-        shared.difficulty = 1
+        chooseDifficulty(2)
+        shared.difficulty = 2
         shared.enemyFireDelay = 1000
         return 0
     # high difficuly selected
     if hiDiffBox.collidepoint(event.pos):
-        chooseDifficulty(1.5)
-        shared.difficulty = 1.5
+        chooseDifficulty(3)
+        shared.difficulty = 3
         shared.enemyFireDelay = 750
         return 0
     # open the high scores screen
