@@ -34,8 +34,17 @@ def gameOverSequence():
     pygame.display.update()
     time.sleep(0.25)
     '''
+    score = str(shared.score)
+    scoreVal = ''
+
+    for c in score:
+        if c == '-':
+            scoreVal += 'N'
+        else:
+            scoreVal += c
+
     text_to_screen(screen, "GAME OVER", shared.width / 5 - 25, shared.height / 5, 75, shared.GOLD)
-    text_to_screen(screen, 'YOUR SCORE IS  {0}'.format(shared.score), shared.width / 10 - 30, shared.height / 3, 50, shared.GOLD)
+    text_to_screen(screen, 'YOUR SCORE IS  {0}'.format(scoreVal), shared.width / 10 - 30, shared.height / 3, 50, shared.GOLD)
     text_to_screen(screen, 'Enter  Name  ', 25, 400, 40, shared.GOLD)
     text_to_screen(screen, 'CONTINUE', 85,  500, 75, shared.GOLD)
     pygame.draw.rect(screen, shared.WHITE, continue_box, 3)
