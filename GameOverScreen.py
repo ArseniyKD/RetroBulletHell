@@ -4,6 +4,7 @@ import os
 import shared
 import time
 import HighScoreTracking
+from text_to_screen import text_to_screen
 
 pygame.init()
 pygame.font.init()
@@ -14,19 +15,6 @@ hs = HighScoreTracking.HighScore()
 
 input_box = pygame.Rect(shared.width / 2, 400, 250, 40)
 continue_box = pygame.Rect(75, 495, 345, 85)
-
-def text_to_screen(screen, text, x, y, size = 50,
-            color = (200, 000, 000), font_type = 'images/fonts/ARCADECLASSIC.TTF'):
-    try:
-        text = str(text)
-        font = pygame.font.Font(font_type, size)
-        text = font.render(text, True, color)
-        screen.blit(text, (x, y))
-        pygame.display.update()
-
-    except Exception:
-        print('Font Error, saw it coming')
-
 
 def gameOverSequence():
     text_to_screen(screen, 'GAME OVER', shared.width / 5 - 25, shared.height / 5, 75, shared.GOLD)

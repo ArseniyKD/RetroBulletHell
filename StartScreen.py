@@ -3,24 +3,13 @@ import sys
 import os
 import shared
 import time
+from text_to_screen import text_to_screen
 
 pygame.init()
 pygame.font.init()
 screen = pygame.display.set_mode((shared.width, shared.height))
 screen.fill(shared.BLACK)
 backdropbox = screen.get_rect()
-
-def text_to_screen(screen, text, x, y, size = 50,
-            color = (200, 000, 000), font_type = 'images/fonts/ARCADECLASSIC.TTF'):
-    try:
-        text = str(text)
-        font = pygame.font.Font(font_type, size)
-        text = font.render(text, True, color)
-        screen.blit(text, (x, y))
-        pygame.display.update()
-
-    except Exception:
-        print('Font Error, saw it coming')
 
 # the background image came from here:
 # https://pxhere.com/en/photo/610854

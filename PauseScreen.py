@@ -3,6 +3,7 @@ import sys
 import os
 import shared
 import time
+from text_to_screen import text_to_screen
 
 pygame.init()
 pygame.font.init()
@@ -14,19 +15,6 @@ pauseScreenBox = pygame.Rect(shared.width/7, shared.width/7, shared.width/7*5, s
 continueGameBox = pygame.Rect(shared.width/7+85, shared.width/7+70, 190, 40)
 saveGameBox = pygame.Rect(shared.width/7+130, shared.width/7+122, 100, 40)
 menuBox = pygame.Rect(shared.width/7+130, shared.width/7+175, 100, 40)
-
-def text_to_screen(screen, text, x, y, size = 50,
-            color = (200, 000, 000), font_type = 'images/fonts/ARCADECLASSIC.TTF'):
-    try:
-        text = str(text)
-        font = pygame.font.Font(font_type, size)
-        text = font.render(text, True, color)
-        screen.blit(text, (x, y))
-        pygame.display.update()
-
-    except Exception:
-        print('Font Error, saw it coming')
-
 
 def processEvents(event):
     if  continueGameBox.collidepoint(event.pos):
