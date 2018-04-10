@@ -4,17 +4,10 @@ import os
 import shared
 import time
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GOLD = (249, 166, 2)
-BLUE = (0, 0, 255)
-GRAY = (134, 136, 138)
-RED = (255, 0, 0)
-
 pygame.init()
 pygame.font.init()
 screen = pygame.display.set_mode((shared.width, shared.height))
-screen.fill(BLACK)
+screen.fill(shared.BLACK)
 backdropbox = screen.get_rect()
 
 newGameBox = pygame.Rect(100, 105, 315, 85)
@@ -42,38 +35,38 @@ def text_to_screen(screen, text, x, y, size = 50,
 def drawMenuScreen():
     BGimage = pygame.image.load(os.path.join('images','menuBG.png')).convert()
     screen.blit(BGimage, (0,0))
-    text_to_screen(screen, "RETRO", 30, 20, 50, GOLD)
-    text_to_screen(screen, "BULLET", 190, 20, 50, BLUE)
-    text_to_screen(screen, "HELL", 370, 20, 50, RED)
-    pygame.draw.line(screen, WHITE, (0, 80), (shared.width, 80), 2)
-    text_to_screen(screen, "NEW GAME", 110, 50 + 60, 75, GOLD)
-    pygame.draw.rect(screen, GRAY, newGameBox, 3)
-    text_to_screen(screen, "CONTINUE GAME", 15, 150 + 60, 70, GOLD)
-    pygame.draw.rect(screen, GRAY, continueGameBox, 3)
-    text_to_screen(screen, "DIFFICULTY", 50, 250 + 60, 75, GOLD)
+    text_to_screen(screen, "RETRO", 30, 20, 50, shared.GOLD)
+    text_to_screen(screen, "BULLET", 190, 20, 50, shared.BLUE)
+    text_to_screen(screen, "HELL", 370, 20, 50, shared.RED)
+    pygame.draw.line(screen, shared.WHITE, (0, 80), (shared.width, 80), 2)
+    text_to_screen(screen, "NEW GAME", 110, 50 + 60, 75, shared.GOLD)
+    pygame.draw.rect(screen, shared.GRAY, newGameBox, 3)
+    text_to_screen(screen, "CONTINUE GAME", 15, 150 + 60, 70, shared.GOLD)
+    pygame.draw.rect(screen, shared.GRAY, continueGameBox, 3)
+    text_to_screen(screen, "DIFFICULTY", 50, 250 + 60, 75, shared.GOLD)
     chooseDifficulty(shared.difficulty)
-    pygame.draw.rect(screen, GRAY, lowDiffBox, 3)
-    pygame.draw.rect(screen, GRAY, medDiffBox, 3)
-    pygame.draw.rect(screen, GRAY, hiDiffBox, 3)
-    text_to_screen(screen, "HIGH SCORES", 40, 410 + 60, 75, GOLD)
-    pygame.draw.rect(screen, GRAY, highScoresBox, 3)
-    text_to_screen(screen, "QUIT", 160, 530 + 60, 75, GOLD)
-    pygame.draw.rect(screen, GRAY, quitBox, 3)
+    pygame.draw.rect(screen, shared.GRAY, lowDiffBox, 3)
+    pygame.draw.rect(screen, shared.GRAY, medDiffBox, 3)
+    pygame.draw.rect(screen, shared.GRAY, hiDiffBox, 3)
+    text_to_screen(screen, "HIGH SCORES", 40, 410 + 60, 75, shared.GOLD)
+    pygame.draw.rect(screen, shared.GRAY, highScoresBox, 3)
+    text_to_screen(screen, "QUIT", 160, 530 + 60, 75, shared.GOLD)
+    pygame.draw.rect(screen, shared.GRAY, quitBox, 3)
     pygame.display.update()
 
 def chooseDifficulty(diffLevel):
     if diffLevel == 0.5:
-        text_to_screen(screen, "LOW", 50, 330 + 60, 50, WHITE)
-        text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, GOLD)
-        text_to_screen(screen, "HIGH", 350, 330 + 60, 50, GOLD)
+        text_to_screen(screen, "LOW", 50, 330 + 60, 50, shared.WHITE)
+        text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, shared.GOLD)
+        text_to_screen(screen, "HIGH", 350, 330 + 60, 50, shared.GOLD)
     if diffLevel == 1:
-        text_to_screen(screen, "LOW", 50, 330 + 60, 50, GOLD)
-        text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, WHITE)
-        text_to_screen(screen, "HIGH", 350, 330 + 60, 50, GOLD)
+        text_to_screen(screen, "LOW", 50, 330 + 60, 50, shared.GOLD)
+        text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, shared.WHITE)
+        text_to_screen(screen, "HIGH", 350, 330 + 60, 50, shared.GOLD)
     if diffLevel == 1.5:
-        text_to_screen(screen, "LOW", 50, 330 + 60, 50, GOLD)
-        text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, GOLD)
-        text_to_screen(screen, "HIGH", 350, 330 + 60, 50, WHITE)
+        text_to_screen(screen, "LOW", 50, 330 + 60, 50, shared.GOLD)
+        text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, shared.GOLD)
+        text_to_screen(screen, "HIGH", 350, 330 + 60, 50, shared.WHITE)
 
 
 def processEvents(event):

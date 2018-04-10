@@ -28,7 +28,7 @@ enemyStep = int((shared.enemyImgHeight+2.5*shared.enemyBuffer)*enemyMoveDelay/en
 pygame.init()  # initialize module
 screen = pygame.display.set_mode((shared.width, shared.height)) # create screen surface on
 # which to draw things
-screen.fill(BLACK) # draw background
+screen.fill(shared.BLACK) # draw background
 backdropbox = screen.get_rect()
 
 player = PlayerMovement.Player()
@@ -51,7 +51,7 @@ startSequence = True
 exit = False
 while not exit:
     if startSequence:
-        screen.fill(BLACK)
+        screen.fill(shared.BLACK)
         if StartScreen.StartScreenSequence():
             exit = True
         else:
@@ -59,7 +59,7 @@ while not exit:
             startSequence = False
 
     if toMenu:
-        screen.fill(BLACK)
+        screen.fill(shared.BLACK)
         menuFlag = MenuScreen.sequence()
         if menuFlag == 1:
             Restart = True
@@ -86,7 +86,7 @@ while not exit:
 
     # clear anything that may have been edited
     if Restart:
-        screen.fill(BLACK)
+        screen.fill(shared.BLACK)
         player.reset()
 
         playerBullets = []
@@ -126,7 +126,7 @@ while not exit:
         Game = True
 
     if toHighScores:
-        screen.fill(BLACK)
+        screen.fill(shared.BLACK)
         highScoreScreen.sequence()
         toHighScores = False
         toMenu = True
@@ -148,7 +148,7 @@ while not exit:
                     load = False
                     Restart = False
                     toHighScores = True
-                    screen.fill(BLACK)
+                    screen.fill(shared.BLACK)
 
     if Game:
         flag = False
@@ -226,7 +226,7 @@ while not exit:
                     enemyBullets.append(Bullets.Bullet("e1", enemyWaves[randomIndex].IndexEnemyWave(i), randomAngle))
                     enemy_bullet_list.add(enemyBullets[-1])
 
-        screen.fill(BLACK) # draw background
+        screen.fill(shared.BLACK) # draw background
         shared.enemy_list.draw(screen) # draw enemyWaves
         player_list.draw(screen) # draw player
         # draw bullets

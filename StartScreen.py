@@ -4,17 +4,10 @@ import os
 import shared
 import time
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GOLD = (249, 166, 2)
-BLUE = (0, 0, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-
 pygame.init()
 pygame.font.init()
 screen = pygame.display.set_mode((shared.width, shared.height))
-screen.fill(BLACK)
+screen.fill(shared.BLACK)
 backdropbox = screen.get_rect()
 
 def text_to_screen(screen, text, x, y, size = 50,
@@ -47,17 +40,17 @@ def StartScreenSequence():
 
         curTime = pygame.time.get_ticks() - startTime
         if curTime >= 6000:
-            text_to_screen(screen, "or the exit button", 195, shared.height - 30, 14, WHITE)
+            text_to_screen(screen, "or the exit button", 195, shared.height - 30, 14, shared.WHITE)
         elif curTime >= 3500:
-            text_to_screen(screen, "just not the power button", 170, shared.height - 50, 15, WHITE)
+            text_to_screen(screen, "just not the power button", 170, shared.height - 50, 15, shared.WHITE)
         elif curTime >= 2250:
-            text_to_screen(screen, "PRESS ANY BUTTON TO CONTINUE", 40, shared.height - 100, 30, WHITE)
+            text_to_screen(screen, "PRESS ANY BUTTON TO CONTINUE", 40, shared.height - 100, 30, shared.WHITE)
         elif curTime >= 1500:
-            text_to_screen(screen, "HELL", shared.width - 345, shared.height / 3 + 75,  100, RED)
+            text_to_screen(screen, "HELL", shared.width - 345, shared.height / 3 + 75,  100, shared.RED)
         elif curTime >= 750:
-            text_to_screen(screen, "BULLET", shared.width - 405, shared.height / 3, 100, BLUE)
+            text_to_screen(screen, "BULLET", shared.width - 405, shared.height / 3, 100, shared.BLUE)
         else:
-            text_to_screen(screen, "RETRO", shared.width - 385, shared.height / 3 - 75, 100, GOLD)
+            text_to_screen(screen, "RETRO", shared.width - 385, shared.height / 3 - 75, 100, shared.GOLD)
 
         pygame.display.flip()  # required to show changes to screen
         shared.clock.tick(shared.fps) # limit fps of game to shared.fps

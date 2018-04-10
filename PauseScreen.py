@@ -4,18 +4,10 @@ import os
 import shared
 import time
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GOLD = (249, 166, 2)
-BLUE = (0, 0, 255)
-GRAY = (134, 136, 138)
-RED = (255, 0, 0)
-DARKBLUE = (16,24,115)
-
 pygame.init()
 pygame.font.init()
 screen = pygame.display.set_mode((shared.width, shared.height))
-screen.fill(BLACK)
+screen.fill(shared.BLACK)
 backdropbox = screen.get_rect()
 
 pauseScreenBox = pygame.Rect(shared.width/7, shared.width/7, shared.width/7*5, shared.height/3)
@@ -38,18 +30,18 @@ def text_to_screen(screen, text, x, y, size = 50,
 
 def processEvents(event):
     if  continueGameBox.collidepoint(event.pos):
-        text_to_screen(screen, "CONTINUE", shared.width/7+90, shared.width/7+70, 40, WHITE)
-        pygame.draw.rect(screen, WHITE, continueGameBox , 3)
+        text_to_screen(screen, "CONTINUE", shared.width/7+90, shared.width/7+70, 40, shared.WHITE)
+        pygame.draw.rect(screen, shared.WHITE, continueGameBox , 3)
         pygame.display.update()
         return 1
     if  saveGameBox.collidepoint(event.pos):
-        text_to_screen(screen, "SAVE", shared.width/7+135, shared.width/7+122, 40, WHITE)
-        pygame.draw.rect(screen, WHITE, saveGameBox , 3)
+        text_to_screen(screen, "SAVE", shared.width/7+135, shared.width/7+122, 40, shared.WHITE)
+        pygame.draw.rect(screen, shared.WHITE, saveGameBox , 3)
         pygame.display.update()
         return 2
     if  menuBox.collidepoint(event.pos):
-        text_to_screen(screen, "MENU", shared.width/7+135, shared.width/7+175, 40, WHITE)
-        pygame.draw.rect(screen, WHITE, menuBox , 3)
+        text_to_screen(screen, "MENU", shared.width/7+135, shared.width/7+175, 40, shared.WHITE)
+        pygame.draw.rect(screen, shared.WHITE, menuBox , 3)
         pygame.display.update()
         return 3
 
@@ -61,18 +53,18 @@ def drawPauseScreen():
     s = pygame.Surface((shared.width, shared.height))
     s.fill(ck)
     s.set_colorkey(ck)
-    pygame.draw.rect(s, DARKBLUE, pauseScreenBox, 0)
+    pygame.draw.rect(s, shared.DARKBLUE, pauseScreenBox, 0)
     s.set_alpha(100)
     screen.blit(s, (0,0))
 
-    text_to_screen(screen, "PAUSE MENU", shared.width/7+50, shared.width/7, 50, GOLD)
-    pygame.draw.line(screen, WHITE, (shared.width/7, shared.width/7+50), (shared.width/7*6, shared.width/7+50), 2)
-    text_to_screen(screen, "CONTINUE", shared.width/7+90, shared.width/7+70, 40, GOLD)
-    pygame.draw.rect(screen, GRAY, continueGameBox , 3)
-    text_to_screen(screen, "SAVE", shared.width/7+135, shared.width/7+122, 40, GOLD)
-    pygame.draw.rect(screen, GRAY, saveGameBox , 3)
-    text_to_screen(screen, "MENU", shared.width/7+135, shared.width/7+175, 40, GOLD)
-    pygame.draw.rect(screen, GRAY, menuBox , 3)
+    text_to_screen(screen, "PAUSE MENU", shared.width/7+50, shared.width/7, 50, shared.GOLD)
+    pygame.draw.line(screen, shared.WHITE, (shared.width/7, shared.width/7+50), (shared.width/7*6, shared.width/7+50), 2)
+    text_to_screen(screen, "CONTINUE", shared.width/7+90, shared.width/7+70, 40, shared.GOLD)
+    pygame.draw.rect(screen, shared.GRAY, continueGameBox , 3)
+    text_to_screen(screen, "SAVE", shared.width/7+135, shared.width/7+122, 40, shared.GOLD)
+    pygame.draw.rect(screen, shared.GRAY, saveGameBox , 3)
+    text_to_screen(screen, "MENU", shared.width/7+135, shared.width/7+175, 40, shared.GOLD)
+    pygame.draw.rect(screen, shared.GRAY, menuBox , 3)
 
     pygame.display.update()
 

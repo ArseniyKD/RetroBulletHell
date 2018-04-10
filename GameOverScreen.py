@@ -5,14 +5,10 @@ import shared
 import time
 import HighScoreTracking
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GOLD = (249, 166, 2)
-
 pygame.init()
 pygame.font.init()
 screen = pygame.display.set_mode((shared.width, shared.height))
-screen.fill(BLACK)
+screen.fill(shared.BLACK)
 backdropbox = screen.get_rect()
 hs = HighScoreTracking.HighScore()
 
@@ -33,13 +29,13 @@ def text_to_screen(screen, text, x, y, size = 50,
 
 
 def gameOverSequence():
-    text_to_screen(screen, 'GAME OVER', shared.width / 5 - 25, shared.height / 5, 75, GOLD)
+    text_to_screen(screen, 'GAME OVER', shared.width / 5 - 25, shared.height / 5, 75, shared.GOLD)
     time.sleep(0.50)
-    text_to_screen(screen, 'GAME OVER', shared.width / 5 - 25, shared.height / 5, 75, WHITE)
+    text_to_screen(screen, 'GAME OVER', shared.width / 5 - 25, shared.height / 5, 75, shared.WHITE)
     time.sleep(0.25)
-    text_to_screen(screen, 'GAME OVER', shared.width / 5 - 25, shared.height / 5, 75, GOLD)
+    text_to_screen(screen, 'GAME OVER', shared.width / 5 - 25, shared.height / 5, 75, shared.GOLD)
     time.sleep(0.50)
-    screen.fill(BLACK)
+    screen.fill(shared.BLACK)
     pygame.display.update()
     '''
     text_to_screen(screen, 'GAME OVER', shared.width / 5 - 25, shared.height / 5, 75, WHITE)
@@ -50,11 +46,11 @@ def gameOverSequence():
     pygame.display.update()
     time.sleep(0.25)
     '''
-    text_to_screen(screen, "GAME OVER", shared.width / 5 - 25, shared.height / 5, 75, GOLD)
-    text_to_screen(screen, 'YOUR SCORE IS  {0}'.format(shared.score), shared.width / 10 - 30, shared.height / 3, 50, GOLD)
-    text_to_screen(screen, 'Enter  Name  ', 25, 400, 40, GOLD)
-    text_to_screen(screen, 'CONTINUE', 85,  500, 75, GOLD)
-    pygame.draw.rect(screen, WHITE, continue_box, 3)
+    text_to_screen(screen, "GAME OVER", shared.width / 5 - 25, shared.height / 5, 75, shared.GOLD)
+    text_to_screen(screen, 'YOUR SCORE IS  {0}'.format(shared.score), shared.width / 10 - 30, shared.height / 3, 50, shared.GOLD)
+    text_to_screen(screen, 'Enter  Name  ', 25, 400, 40, shared.GOLD)
+    text_to_screen(screen, 'CONTINUE', 85,  500, 75, shared.GOLD)
+    pygame.draw.rect(screen, shared.WHITE, continue_box, 3)
 
 
 def gameOverInput(event):
@@ -78,8 +74,8 @@ def gameOverInput(event):
             else:
                 shared.playerName += event.unicode
 
-    pygame.draw.rect(screen, BLACK, input_box)
-    text_to_screen(screen, shared.playerName, input_box.x, input_box.y, 40, GOLD)
+    pygame.draw.rect(screen, shared.BLACK, input_box)
+    text_to_screen(screen, shared.playerName, input_box.x, input_box.y, 40, shared.GOLD)
     return False
 
 '''

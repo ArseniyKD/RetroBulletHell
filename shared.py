@@ -18,3 +18,11 @@ enemy_list = pygame.sprite.Group()
 score = 0
 playerName = ''
 difficulty = 1
+
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GOLD = (249, 166, 2)
+BLUE = (0, 0, 255)
+GRAY = (134, 136, 138)
+RED = (255, 0, 0)
+DARKBLUE = (16,24,115)
