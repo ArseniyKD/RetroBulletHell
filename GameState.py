@@ -28,7 +28,7 @@ def GameState(screen):
                     if event.key == pygame.K_ESCAPE:
                         pauseFlag = PauseScreen.pauseSequence()
                         if pauseFlag == 2:
-                            SaveFile.saveFile(gameStateVariables.enemyWaves, gameStateVariables.enemyBullets, gameStateVariables.playerBullets, gameStateVariables.player, shared.score)
+                            SaveFile.saveFile(gameStateVariables.enemyWaves, gameStateVariables.enemy_bullet_list, gameStateVariables.player_bullet_list, gameStateVariables.player, shared.score)
                         elif pauseFlag == 3:
                             return True
 

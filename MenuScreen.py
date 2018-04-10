@@ -155,28 +155,28 @@ def processMouseEvents(event, canLoad):
         return 1, True
     # Low difficulty selected
     if lowDiffBox.collidepoint(event.pos):
-        chooseDifficulty(1)
         colourBox(2, shared.GRAY, shared.difficulty)
+        chooseDifficulty(1)
         shared.difficulty = 1
         colourBox(2, shared.WHITE, shared.difficulty)
         shared.enemyFireDelay = 1500
-        return 2, True
+        return 2, False
     # medium difficulty selected
     if medDiffBox.collidepoint(event.pos):
-        chooseDifficulty(2)
         colourBox(2, shared.GRAY, shared.difficulty)
+        chooseDifficulty(2)
         shared.difficulty = 2
         colourBox(2, shared.WHITE, shared.difficulty)
         shared.enemyFireDelay = 1000
-        return 2, True
+        return 2, False
     # high difficuly selected
     if hiDiffBox.collidepoint(event.pos):
-        chooseDifficulty(3
         colourBox(2, shared.GRAY, shared.difficulty)
+        chooseDifficulty(3)
         shared.difficulty = 3
         colourBox(2, shared.WHITE, shared.difficulty)
         shared.enemyFireDelay = 750
-        return 2, True
+        return 2, False
     # open the high scores screen
     if highScoresBox.collidepoint(event.pos):
         text_to_screen(screen, "HIGH SCORES", 40, 410 + 60, 75, shared.WHITE)
@@ -216,7 +216,7 @@ def sequence():
 
     if prev == 0:
         return 1
-    if prev == 3:
-        return 0
     if prev == 1:
         return 2
+    if prev == 3:
+        return 0
