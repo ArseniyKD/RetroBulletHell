@@ -92,9 +92,6 @@ def redrawButton(prev, curr):
             text_to_screen(screen, buttonStrings[curr][0], buttonStrings[curr][1], buttonStrings[curr][2], buttonStrings[curr][3], shared.WHITE)
 
 def processKeyEvents(event, prev, canLoad):
-    if event.key == pygame.K_RETURN:
-        return prev, True
-
     curr = prev
     if curr == 2:
         if event.key == pygame.K_LEFT or event.key == ord('a'):
@@ -109,16 +106,19 @@ def processKeyEvents(event, prev, canLoad):
                 shared.difficulty += 1
                 colourBox(curr, shared.WHITE, shared.difficulty)
                 chooseDifficulty(shared.difficulty)
+    else:
+        if event.key == pygame.K_RETURN:
+            return prev, True
     if event.key == pygame.K_UP or event.key == ord('w'):
         if prev == 0:
-            curr == 4
+            curr = 4
         else:
             curr -= 1
         if not canLoad and curr == 1:
             curr = 0
     elif event.key == pygame.K_DOWN or event.key == ord('s'):
         if prev == 4:
-            curr == 0
+            curr = 0
         else:
             curr += 1
         if not canLoad and curr == 1:

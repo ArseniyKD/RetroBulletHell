@@ -54,12 +54,12 @@ def processKeyEvents(event, prev):
     curr = prev
     if event.key == pygame.K_UP or event.key == ord('w'):
         if prev == 1:
-            curr == 3
+            curr = 3
         else:
             curr -= 1
     elif event.key == pygame.K_DOWN or event.key == ord('s'):
         if prev == 3:
-            curr == 1
+            curr = 1
         else:
             curr += 1
 
