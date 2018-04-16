@@ -22,15 +22,21 @@ screen = pygame.display.set_mode((shared.width, shared.height)) # create screen 
 screen.fill(shared.BLACK) # draw background
 backdropbox = screen.get_rect()
 
+# initialises the player list with the player class.
 gameStateVariables.player_list.add(gameStateVariables.player)
 
+# stores the correct time values for the game.
 gameStateVariables.prevPlayerFireTime = gameStateVariables.prevEnemyMoveTime = gameStateVariables.prevEnemyFireTime = pygame.time.get_ticks()
 gameStateVariables.prevEnemySpawnTime = pygame.time.get_ticks() - shared.enemyWaveDelay
 
+# the different states of the Finite State Machine (FSM for short from now on)
 Restart = toHighScores = toMenu = drawGameOverSequence = GameOver = load = Game = Quit = False
+# this part is run only once at the very beginning when launching the game.
 startSequence = True
 
+#
 while not Quit:
+    # this part runs the start sequence. As mentioned earlier, only ever ran once.
     if startSequence:
         screen.fill(shared.BLACK)
         if StartScreen.StartScreenSequence():
@@ -39,6 +45,8 @@ while not Quit:
             toMenu = True
             startSequence = False
 
+    # this starts the menu screen sequence of the FSM. The menuFlag variable dictates where
+    # the FSM will proceed to next.
     if toMenu:
         screen.fill(shared.BLACK)
         menuFlag = MenuScreen.sequence()
@@ -50,6 +58,8 @@ while not Quit:
             load = True
         toMenu = False
 
+    # this runs the main game itself. if the game was quit from the pause screen, will go straight to the
+    # main menu, otherwise will start the game over state.
     if Game:
         check = GameState(screen)
         if check:
@@ -59,17 +69,21 @@ while not Quit:
             Game = False
             GameOver = True
 
+    # runs the game over sequence of the game. Proceeds to high scores afterwards.
     if GameOver:
         GameOverScreen.sequence()
         GameOver = False
         toHighScores = True
 
+    # runs the high score screen sequence. Always proceeds to main menu afterwards.
     if toHighScores:
         screen.fill(shared.BLACK)
         highScoreScreen.sequence()
         toHighScores = False
         toMenu = True
 
+    # this is starts the game with all the initial gameStateVariables initialised to 0.
+    # basically resets the gameState.
     if Restart:
         screen.fill(shared.BLACK)
         gameStateVariables.player.reset()
@@ -89,6 +103,7 @@ while not Quit:
         Restart = False
         Game = True
 
+    # will either load the saved game or do the same thing as the restart state.
     if load:
         screen.fill(shared.BLACK)
         gameStateVariables.player.reset()
@@ -126,5 +141,6 @@ while not Quit:
     pygame.display.flip()  # required to show changes to screen
     shared.clock.tick(shared.fps) # limit fps of game to shared.fps
 
+# closes the window.
 pygame.quit()
 sys.exit()

@@ -5,12 +5,14 @@ import shared
 import time
 from text_to_screen import text_to_screen
 
+# the initialisation calls for pygame and the current screen.
 pygame.init()
 pygame.font.init()
 screen = pygame.display.set_mode((shared.width, shared.height))
 screen.fill(shared.BLACK)
 backdropbox = screen.get_rect()
 
+# this block creates all the boxes for the buttons in the menu.
 newGameBox = pygame.Rect(100, 105, 315, 85)
 continueGameBox = pygame.Rect(10, 205, 490, 80)
 lowDiffBox = pygame.Rect(40, 385, 100, 60)
@@ -22,14 +24,23 @@ quitBox = pygame.Rect(150, 580, 175, 85)
 # the background image came from here:
 # https://pxhere.com/en/photo/610854
 def drawMenuScreen():
+    # this creates the background for the screen.
     BGimage = pygame.image.load(os.path.join('images','menuBG.png')).convert()
     screen.blit(BGimage, (0,0))
+
+    # this part creates all the graphic for the menu screen, drawing
+    # all the buttons and all the text on the screen.
     text_to_screen(screen, "RETRO", 30, 20, 50, shared.GOLD)
     text_to_screen(screen, "BULLET", 190, 20, 50, shared.BLUE)
     text_to_screen(screen, "HELL", 370, 20, 50, shared.RED)
     pygame.draw.line(screen, shared.WHITE, (0, 80), (shared.width, 80), 2)
     text_to_screen(screen, "NEW GAME", 110, 50 + 60, 75, shared.WHITE)
     pygame.draw.rect(screen, shared.WHITE, newGameBox, 3)
+
+    # this block grays out the "Continue Game" button if there is no save file
+    # present within the directory.
+    # can load is then stored for the sake of keeping track whether the box is
+    # used at all or not.
     canLoad = False
     try:
         istream = open('save.txt', 'r').close()
@@ -53,6 +64,8 @@ def drawMenuScreen():
 
     return canLoad
 
+# this function will colour the correct difficulty setting's box outline.
+# the selected difficuly is outlined in white, the rest are outlined in gray
 def colourBox(curr, colour, diffLevel = shared.difficulty):
     if curr == 0:
         pygame.draw.rect(screen, colour, newGameBox, 3)
@@ -70,6 +83,8 @@ def colourBox(curr, colour, diffLevel = shared.difficulty):
     elif curr == 4:
         pygame.draw.rect(screen, colour, quitBox, 3)
 
+# this function colours the selected difficulty setting's text to white
+# while keeping all the other choices golden
 def chooseDifficulty(diffLevel):
     if diffLevel == 1:
         text_to_screen(screen, "LOW", 50, 330 + 60, 50, shared.WHITE)
@@ -84,6 +99,8 @@ def chooseDifficulty(diffLevel):
         text_to_screen(screen, "MEDIUM", 160, 330 + 60, 50, shared.GOLD)
         text_to_screen(screen, "HIGH", 350, 330 + 60, 50, shared.WHITE)
 
+# this function redraws the buttons when using the arrowkeys to
+# navigate the menu.
 def redrawButton(prev, curr):
     if prev != curr:
         buttonStrings = {0:("NEW GAME", 110, 50 + 60, 75), 1:("CONTINUE GAME", 15, 150 + 60, 70), 2:("DIFFICULTY", 50, 250 + 60, 75), 3:("HIGH SCORES", 40, 410 + 60, 75), 4: ("QUIT", 160, 530 + 60, 75)}
@@ -91,6 +108,7 @@ def redrawButton(prev, curr):
         if curr != 2:
             text_to_screen(screen, buttonStrings[curr][0], buttonStrings[curr][1], buttonStrings[curr][2], buttonStrings[curr][3], shared.WHITE)
 
+# this processes the arrowkey movement in the menu screen.
 def processKeyEvents(event, prev, canLoad):
     curr = prev
     if curr == 2:
@@ -142,6 +160,7 @@ def processKeyEvents(event, prev, canLoad):
 
     return curr, False
 
+# this function processes menu navigation using the mouse clicks.
 def processMouseEvents(event, canLoad):
     # Time to start a new game
     if  newGameBox.collidepoint(event.pos):
@@ -188,6 +207,10 @@ def processMouseEvents(event, canLoad):
         colourBox(4, shared.WHITE)
         return 4, True
 
+# this is the main menu sequence function. It will correctly pass the
+# navigation requirements back to the FSM in RetroBulletHell.py .
+# will also quit the game if the "Quit" button is clicked or the user clicks the
+# close window button.
 def sequence():
     exit = False
     quit = False
@@ -197,6 +220,7 @@ def sequence():
     canLoad = False
     prev = 0
     while not exit:
+        # this will run once just to draw the menu screen initially.
         if initMenuScreen:
             canLoad = drawMenuScreen()
             initMenuScreen = False
@@ -214,6 +238,7 @@ def sequence():
         pygame.quit()
         sys.exit()
 
+    # the returns make sense in the context of the FSM, please refer back to it for clarification.
     if prev == 0:
         return 1
     if prev == 1:

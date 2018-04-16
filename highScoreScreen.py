@@ -6,21 +6,26 @@ import time
 import HighScoreTracking
 from text_to_screen import text_to_screen
 
+# the initialisation calls for pygame and the current screen.
 pygame.init()
 pygame.font.init()
 screen = pygame.display.set_mode((shared.width, shared.height))
 screen.fill(shared.BLACK)
 backdropbox = screen.get_rect()
 
+# initialises the button to go back to the main menu.
 buttonBox = pygame.Rect(75, 595, 345, 85)
 
 
 # the background image came from here:
 # https://pxhere.com/en/photo/610854
+# this function draws the high score screen
 def drawHighScoreScreen():
+    # draws the background of this menu.
     BGimage = pygame.image.load(os.path.join('images','menuBG.png')).convert()
     screen.blit(BGimage, (0,0))
 
+    # this large block just draws the high score screen without the high scores themselves.
     text_to_screen(screen, "HIGH   SCORES", 40, 20, 75, shared.GOLD)
     pygame.draw.line(screen, shared.WHITE, (0, 80), (shared.width, 80), 2)
     pygame.draw.line(screen, shared.GRAY, (55, 105), (55, 555), 2)
@@ -51,18 +56,21 @@ def drawHighScoreScreen():
     pygame.draw.rect(screen, shared.WHITE, buttonBox, 2)
     text_to_screen(screen, "MAIN MENU", 80, 600, 75, shared.GOLD)
 
-
+# this function draws the top ten high scores.
 def drawHighScores():
+    # count is used to draw the high score in the right row.
     count = 0
     highScores = HighScoreTracking.HighScore()
     allScores = highScores.getAllHighScores()
     for score in allScores:
+        # this corrects the spaces from the highScore file.
         name = ''
         for c in score[1]:
             if c == '_':
                 name += '   '
             else:
                 name += c
+        # this corrects for negative values of the scores
         scoreVal = ''
         originalVal = str(score[0])
         for c in originalVal:
@@ -74,16 +82,21 @@ def drawHighScores():
         text_to_screen(screen, scoreVal, 290, 150 + count*40, 50, shared.WHITE)
         count += 1
 
+# this function runs the user inputs during the high score screen sequence.
 def sequence():
+    # quit is used to close the window
+    # exit simply changes the screen to the main menu.
     quit = False
     exit = False
     initHighScoreScreen = True
     while not exit:
+        # this runs only once to draw all the high scores to the screen
         if initHighScoreScreen:
             drawHighScoreScreen()
             drawHighScores()
             initHighScoreScreen = False
 
+        # very simple input handler. will either close the window or move on to the high score screen.
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit = True
@@ -94,6 +107,8 @@ def sequence():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if buttonBox.collidepoint(event.pos):
                     exit = True
+
+    # will close the window if needed.
     if quit:
         pygame.quit()
         sys.exit()

@@ -1,6 +1,8 @@
 import pygame
 import PlayerMovement
 
+# this is a file of all the constants and variables that are required to run the
+# game state of the FSM.
 player = PlayerMovement.Player()
 playerBullets = []
 enemyBullets = []
