@@ -18,10 +18,11 @@ def StartScreenSequence():
     screen.blit(BGimage, (0,0))
 
     startTime = pygame.time.get_ticks()
-    while True:
+    exit = False
+    while not exit:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return True
+                exit = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 return False
             elif event.type == pygame.KEYDOWN:
@@ -43,3 +44,6 @@ def StartScreenSequence():
 
         pygame.display.flip()  # required to show changes to screen
         shared.clock.tick(shared.fps) # limit fps of game to shared.fps
+
+    pygame.quit()
+    sys.exit()
