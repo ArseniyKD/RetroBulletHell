@@ -55,9 +55,12 @@ through mouse input.
 
 Potential Restrictions and Known Bugs:
 There is a bug that happens on the in class VM if pygame is not updated to the
-latest version where the game halts completely. This bug was only ever encountered
-on the lab machines. Please update make sure pygame is up to date on your machine
-during testing.
+latest version where the enemies and bullets stop being updated but the player
+can still move around. This bug was only ever encountered on the lab machines.
+Please update make sure pygame is up to date on your machine during testing. If
+the bug is encountered, simply restart the game. Occasionally it may be
+necessary to exit to the menu in order to quit the game, but this issue was only
+encountered once.
 
 Required Accessories:
 N/A
@@ -66,5 +69,5 @@ Wiring Instructions:
 N/A
 
 How to Run Code:
-To run the code, run the command "python3 RetroBulletHell.py" in the terminal when
-you are within the folder that contains all the required game files.
+To run the code, run the command "python3 RetroBulletHell.py" in the terminal
+when you are within the folder that contains all the required game files.
