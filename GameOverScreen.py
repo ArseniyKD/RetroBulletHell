@@ -1,3 +1,5 @@
+# Created by Arseniy Kouzmenkov 1542302 and Patrisha de Boon 1496979
+
 import pygame
 import sys
 import os

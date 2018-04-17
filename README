@@ -1,0 +1,65 @@
+Name Student A: Arseniy Kouzmenkov   	ID: 1542302
+Name student B: Patrisha de Boon   	ID: 1496979
+
+Summary Description:
+Our game is an arcade style retro bullet hell game built completely in Python3
+using the pygame module. The goal of the game is essentially to destroy as many
+enemies as possible while avoiding enemy bullets. The game has a start screen,
+a menu screen, a high score screen, a game screen, a game over screen, multiple
+difficulties, and the ability to save the game or load the game from a previous
+save file.
+
+Detailed Description of Gameplay:
+During gameplay the player uses wasd and/or arrow keys to control a ship which
+fires bullets automatically at a set rate, and the goal is essentially to
+destroy as many enemies as possible while avoiding enemy bullets. The enemies
+are spawned in waves, and each wave will have a random enemy type and will begin
+at a random x location. The number of enemies in a wave is dependent on the type
+of the enemies, and the amount of health points each enemy has is dependent on
+the type of the enemy and the difficulty of the game. There can be a maximum of
+4 enemy waves on screen at a time. A random enemy wave will fire bullets after
+a set delay, and each enemy remaining in the wave will fire a number of bullets
+which depends on the enemy type and the difficulty of the game. The player is
+awarded points for killing an enemy, and points are removed for letting an enemy
+reach the bottom of the screen. The number of points they are rewarded or removed
+depends on the enemy type. The player is damaged when they collide with an enemy
+bullet or another enemy, and the opposite is true as well. It is notable that
+higher level enemies fire multiple bullets at once at random angles, and it is
+possible for these bullets to overlap and appear to be one bullet. If the player
+collides with these overlapping bullets, they will take multiple points of
+damage which will be noticeable in game as multiple damage animations. While in
+the game state, the player can press the Esc key to bring up the pause menu
+which is explained further in 'Detailed Description of Non-Gameplay screens', as
+is the Game Over screen which is brought up when the player dies.
+
+Detailed Description of Non-Gameplay screens:
+The game has a start screen which can be skipped at any time by pressing any
+button, bringing the player to the main menu screen. In the menu screen the
+player can start a new game, they can continue a saved game if a save file is
+in the directory, change the difficulty of the game, see the current high
+scores, or quit the game. If a save file is present, it is assumed to be a valid
+save file. If the player presses Esc while in game, they will bring up the pause
+menu. If they press again, they will close the menu and return to gameplay, just
+as they will if they select 'continue'. They can also save the game, which will
+write the current relevant info of the game to save.txt, and the menu will then
+be closed and they will return to the game. They can also chose to return to
+the main menu. If the player is killed, they will go to the Game Over screen
+which will display their score and allow them to record their preferred name,
+with an 11 character limit. This name and score will be recorded in the high
+score file if it is within the top ten scores. If no highScore file is present,
+then a new one will be created to hold this score and it will automatically be
+the top score. The player can then continue to the high score screen which will
+display the top ten scores recorded on the highScore file. Navigation for all of
+the screens can be done through keyboard input  (wasd/arrow keys and enter) or
+through mouse input.
+
+Potential Restrictions and Known Bugs:
+!!!!!!!!!!!!!!! TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Required Accessories:
+N/A
+
+Wiring Instructions:
+N/A
+
+How to Run Code:

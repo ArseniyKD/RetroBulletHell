@@ -5,7 +5,10 @@ from avl_dict import AVLDict as aDict
 from random import *
 import shared
 
-# this function will load in the correct image for each enemy.
+# the get_image function will load in the correct image for each enemy 
+# only once, and will store the image in a dictionary so that it doesn't have
+# to be loaded in pixel by pixel every time a new bullet is spawned. This code
+# came from this source https://nerdparadise.com/programming/pygame/part2.
 _image_library = {}
 def get_image(path):
         global _image_library

@@ -1,3 +1,5 @@
+# Created by Arseniy Kouzmenkov 1542302 and Patrisha de Boon 1496979
+
 import pygame  # load pygame keywords
 import sys     # let python use the file system
 import os      # help python identify the OS
