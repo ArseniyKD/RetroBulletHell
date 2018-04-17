@@ -54,7 +54,10 @@ the screens can be done through keyboard input  (wasd/arrow keys and enter) or
 through mouse input.
 
 Potential Restrictions and Known Bugs:
-!!!!!!!!!!!!!!! TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+There is a bug that happens on the in class VM if pygame is not updated to the
+latest version where the game halts completely. This bug was only ever encountered
+on the lab machines. Please update make sure pygame is up to date on your machine
+during testing.
 
 Required Accessories:
 N/A
