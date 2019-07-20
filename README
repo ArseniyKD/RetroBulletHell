@@ -71,3 +71,5 @@ N/A
 How to Run Code:
 To run the code, run the command "python3 RetroBulletHell.py" in the terminal
 when you are within the folder that contains all the required game files.
+
+Make sure to have pygame installed on your machine before trying to run the game
