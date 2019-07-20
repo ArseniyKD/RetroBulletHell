@@ -1,7 +1,6 @@
 import pygame
 import sys     # let python use the file system
 import os      # help python identify the OS
-from avl_dict import AVLDict as aDict
 from random import *
 import shared
 
@@ -87,7 +86,7 @@ class EnemyWave:
     def __init__(self, Etype = None):
         self.Etype = Etype
         self.Size = None
-        self.wave = aDict()
+        self.wave = {}
         self.initialX = None
         self.currentY = 0
         self.width = None
